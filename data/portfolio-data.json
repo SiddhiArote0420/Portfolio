@@ -67,6 +67,21 @@
       "proof2Url": "",
       "proof3Title": "",
       "proof3Url": ""
+    },
+    {
+      "id": 6,
+      "degree": "Bachelor of Computer Science (BCS) ",
+      "institution": "BacheloAgasti Arts, Commerce and Dadasaheb Rupwate Science College, Akole ",
+      "university": "Savitribai Phule Pune University (SPPU)",
+      "duration": "2021 - 2026",
+      "statusText": "74%",
+      "description": "",
+      "proof1Title": "",
+      "proof1Url": "uploads/edu1_1792559795167_UG-resut.jpeg",
+      "proof2Title": "",
+      "proof2Url": "",
+      "proof3Title": "",
+      "proof3Url": ""
     }
   ],
   "certificates": [
@@ -194,7 +209,7 @@
     "projects": 2,
     "skills": 10,
     "certificates": 2,
-    "education": 1,
+    "education": 2,
     "experience": 1
   }
 }

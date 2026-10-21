@@ -1,0 +1,9 @@
+# Compiled build directory
+build/
+target/
+*.war
+
+# OS & temporary files
+.DS_Store
+Thumbs.db
+*~

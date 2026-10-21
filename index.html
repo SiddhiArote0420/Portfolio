@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siddhi Arote — Full-Stack Software Engineer</title>
+    <!-- Bootstrap 5.3 CSS for Responsive Design & Dark Cards -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Custom Portfolio Dark Theme CSS -->
+    <link rel="stylesheet" href="assets/portfolio.css">
+</head>
+<body>
+
+<!-- ================= TOP NAVBAR ================= -->
+<header class="navbar">
+    <div class="navbar-inner w-100">
+        <a href="#top" class="brand">
+            <div class="brand-logo">SA</div>
+            <div class="brand-text">
+                <div class="brand-name">
+                    Siddhi Arote
+                    <span class="online-dot" title="Available for Immediate Joining"></span>
+                </div>
+                <div class="brand-sub">Full-Stack Developer</div>
+            </div>
+        </a>
+
+        <nav class="nav-links">
+            <a href="#projects" class="nav-link"><i class="fa-regular fa-folder-open"></i> Projects</a>
+            <a href="#education" class="nav-link"><i class="fa-solid fa-graduation-cap"></i> Education &amp; Proofs</a>
+            <a href="#certificates" class="nav-link"><i class="fa-solid fa-award"></i> Certificates</a>
+            <a href="#experience" class="nav-link"><i class="fa-solid fa-briefcase"></i> Experience</a>
+            <a href="#skills" class="nav-link"><i class="fa-solid fa-code"></i> Skills</a>
+            <a href="#contact" class="nav-link"><i class="fa-regular fa-paper-plane"></i> Contact</a>
+        </nav>
+
+        <div class="nav-actions">
+            <button type="button" class="btn-recruiter" onclick="openRecruiterModal()">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Recruiter Quick-View
+            </button>
+            <a href="#resume-section" class="btn-resume-nav">
+                <i class="fa-regular fa-file-lines"></i> Resume
+            </a>
+        </div>
+    </div>
+</header>
+
+<!-- ================= HERO SECTION ================= -->
+<section id="top" class="hero-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <!-- Left Column -->
+            <div class="col-lg-7">
+                <div class="status-pill">
+                    <span class="online-dot"></span>
+                    <span>Open to Full-Time &amp; Internship Opportunities</span>
+                    <span class="sep">|</span>
+                    <span class="loc"><i class="fa-solid fa-location-dot" style="color:#f43f5e;"></i> Pune, Maharashtra, India</span>
+                </div>
+
+                <div class="hero-greeting">HELLO, I AM</div>
+                <h1 class="hero-name">Siddhi Arote</h1>
+                <h2 class="hero-role">
+                    <span id="heroRotatingRole" class="rotating-role-fade">Java Full Stack Developer</span>
+                </h2>
+                <p class="hero-bio">
+                    Java Full Stack Developer skilled in Core Java, Spring Boot, Spring MVC, Spring JDBC, Servlets, JSP, RESTful APIs, MySQL, PL/SQL, HTML5, CSS3, JavaScript, and Bootstrap. Passionate about building scalable enterprise web applications and clean architectures.
+                </p>
+
+                <div class="hero-highlight-bar">
+                    <span class="highlight-gold">
+                        <i class="fa-solid fa-medal"></i>
+                        NPTEL IIT Kharagpur — Programming in Java (Elite)
+                        <button type="button" class="btn-view-proof-mini"
+                                onclick="openProofModal('Programming in Java - Elite Certification', 'uploads/cert_1792518285256_NPTEL26CS36S125180229004916999.pdf', 'Verified Credential Proof — Siddhi Arote')">
+                            View Proof
+                        </button>
+                    </span>
+                    <span style="color:#334155;">•</span>
+                    <span class="highlight-mca">
+                        <i class="fa-regular fa-circle-check"></i>
+                        Master of Computer Science (MCS — 78.50%)
+                    </span>
+                </div>
+
+                <div class="hero-cta-row">
+                    <a href="#projects" class="btn-explore">
+                        Explore Projects <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <a href="#resume-section" class="btn-dark-cta">
+                        <i class="fa-solid fa-file-arrow-down" style="color:#38bdf8;"></i> Download Resume
+                    </a>
+                    <a href="#education" class="btn-dark-cta">
+                        <i class="fa-solid fa-shield-halved" style="color:#10b981;"></i> Academic Proofs
+                    </a>
+                </div>
+
+                <div class="hero-socials">
+                    <a href="https://github.com/SiddhiArote0420" target="_blank" class="social-box" title="GitHub">
+                        <i class="fa-brands fa-github"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/siddhi-arote-3b6bb731a" target="_blank" class="social-box" title="LinkedIn">
+                        <i class="fa-brands fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://leetcode.com/u/Arote_Siddhi" target="_blank" class="social-box" title="LeetCode">
+                        <span style="font-size:0.76rem;font-weight:800;">LC</span>
+                    </a>
+                    <a href="mailto:siddhiarote5@gmail.com" class="social-box" title="Email">
+                        <i class="fa-regular fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Column: Glowing Portrait Card -->
+            <div class="col-lg-5">
+                <div class="hero-photo-wrap">
+                    <div class="photo-glow"></div>
+
+                    <!-- Top-Right Floating Badge -->
+                    <div class="floating-badge top-right">
+                        <div class="fb-icon gold"><i class="fa-solid fa-award"></i></div>
+                        <div>
+                            <div class="fb-title gold-text">Verified</div>
+                            <div class="fb-sub">Top Credentials</div>
+                        </div>
+                    </div>
+
+                    <div class="photo-card">
+                        <img src="uploads/profile_1792514562348_pic.jpeg"
+                             alt="Siddhi Arote"
+                             onerror="this.src='https://ui-avatars.com/api/?name=Siddhi+Arote&size=500&background=0f172a&color=00e5ff&bold=true'">
+                        <div class="photo-caption-overlay">
+                            <div class="photo-caption-name">Siddhi Arote</div>
+                            <div class="photo-caption-role rotating-role-fade" id="photoCardRotatingRole">Java Full Stack Developer</div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom-Left Floating Badge -->
+                    <div class="floating-badge bottom-left">
+                        <div class="fb-icon blue"><i class="fa-brands fa-github"></i></div>
+                        <div>
+                            <div class="fb-title">Portfolio</div>
+                            <div class="fb-sub">Flagship Projects</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= DETAILED PROJECT ENGINEERING SHOWCASE ================= -->
+<section id="projects">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-badge">
+                <i class="fa-solid fa-code"></i> Flagship Production &amp; Open-Source Projects
+            </div>
+            <h2 class="section-title">Detailed Project Engineering Showcase</h2>
+            <p class="section-subtitle">
+                Explore complete architectural deep-dives, live codebases, and classified builds across Java
+                Enterprise, Spring Boot, and Full-Stack applications.
+            </p>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="filter-group" id="projectCategoryFilters">
+                <button type="button" class="filter-btn active" onclick="filterProjects('category', 'ALL', this)">All Projects</button>
+                <button type="button" class="filter-btn" onclick="filterProjects('category', 'Java Full Stack', this)">☕ Java Full Stack</button>
+                <button type="button" class="filter-btn" onclick="filterProjects('category', 'MERN Stack', this)">⚛️ MERN Stack</button>
+                <button type="button" class="filter-btn" onclick="filterProjects('category', 'AI & Microservices', this)">🤖 AI &amp; Microservices</button>
+            </div>
+
+            <div class="filter-group" id="projectMethodFilters">
+                <button type="button" class="filter-btn active" onclick="filterProjects('method', 'ALL', this)">All Methods</button>
+                <button type="button" class="filter-btn" onclick="filterProjects('method', 'Solo Handcrafted', this)">&lt;/&gt; 🛠️ Handcrafted Solo</button>
+                <button type="button" class="filter-btn" onclick="filterProjects('method', 'AI & Prompt Engineered', this)">🤖 AI / Prompt Engineered</button>
+            </div>
+
+            <div class="search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="projectSearchInput" class="search-input" placeholder="Search by tech or name..." oninput="applyProjectFilters()">
+            </div>
+        </div>
+
+        <!-- Bootstrap 5 Row for Dark Project Cards -->
+        <div class="row g-4 justify-content-center" id="projectsGrid">
+            <!-- Project 1 -->
+            <div class="col-lg-6 col-md-6 d-flex align-items-stretch project-col-item"
+                 data-category="Java Full Stack"
+                 data-method="Solo Handcrafted"
+                 data-search="restaurant management system spring boot spring jdbc rest apis mysql jsp html5 css3 javascript bootstrap postman">
+                <div class="card project-card w-100 border-secondary">
+                    <div>
+                        <div class="project-top-badges">
+                            <span class="badge-method solo">&lt;/&gt; 🛠️ Solo Handcrafted</span>
+                            <span class="badge-featured">FEATURED</span>
+                        </div>
+                        <div class="project-title-row">
+                            <h3 class="project-title">RESTAURANT MANAGEMENT SYSTEM</h3>
+                            <a href="https://github.com/SiddhiArote0420" target="_blank" style="color:#64748b;font-size:0.85rem;" title="Open Project Link">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                        <p class="project-desc">A full-stack, role-based restaurant management web application built to streamline daily restaurant operations, table management, order tracking, and billing with responsive staff dashboards</p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">Spring Boot</span>
+                            <span class="tech-tag">Spring JDBC</span>
+                            <span class="tech-tag">REST APIs</span>
+                            <span class="tech-tag">MySQL</span>
+                            <span class="tech-tag">JSP</span>
+                            <span class="tech-tag more">+5 more</span>
+                        </div>
+                    </div>
+                    <div class="project-footer">
+                        <button type="button" class="deep-dive-link"
+                                data-title="RESTAURANT MANAGEMENT SYSTEM"
+                                data-cat="Java Full Stack • Solo Handcrafted"
+                                data-desc="A full-stack, role-based restaurant management web application built to streamline daily restaurant operations, table management, order tracking, and billing with responsive staff dashboards"
+                                data-arch="Role-Based Access Control (RBAC): Designed customized UI workflows and access levels for 4 distinct user roles: Admin, Receptionist, Waiter, and Chef. RESTful Backend: Developed secure REST APIs using Spring Boot and Spring JDBC to execute optimized CRUD operations for tables, categories, food items, orders, and payments. Database &amp; Testing: Structured relational data models in MySQL and rigorously tested API endpoints using Postman for reliable error handling and smooth data flow. Frontend UI: Built responsive, interactive staff interfaces using JSP, HTML5, CSS3, JavaScript, and Bootstrap."
+                                data-tech="Spring Boot, Spring JDBC, REST APIs, MySQL, JSP, HTML5, CSS3, JavaScript, Bootstrap, Postman"
+                                data-github="https://github.com/SiddhiArote0420"
+                                data-proof=""
+                                onclick="openProjectDeepDive(this)">
+                            Click for Deep Dive &amp; Architecture →
+                        </button>
+                        <a href="https://github.com/SiddhiArote0420" target="_blank" class="repo-icon-btn" title="View Source on GitHub">
+                            <i class="fa-brands fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="col-lg-6 col-md-6 d-flex align-items-stretch project-col-item"
+                 data-category="Java Full Stack"
+                 data-method="Solo Handcrafted"
+                 data-search="online examination system core java servlets jdbc mysql html5 css3 bootstrap javascript apache tomcat">
+                <div class="card project-card w-100 border-secondary">
+                    <div>
+                        <div class="project-top-badges">
+                            <span class="badge-method solo">&lt;/&gt; 🛠️ Solo Handcrafted</span>
+                            <span class="badge-featured">FEATURED</span>
+                        </div>
+                        <div class="project-title-row">
+                            <h3 class="project-title">ONLINE EXAMINATION SYSTEM</h3>
+                            <a href="https://github.com/SiddhiArote0420" target="_blank" style="color:#64748b;font-size:0.85rem;" title="Open Project Link">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                        <p class="project-desc">A dynamic online assessment portal featuring admin question-bank management, timed student exams, session handling, and instant automated result calculation</p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">Core Java</span>
+                            <span class="tech-tag">Servlets</span>
+                            <span class="tech-tag">JDBC</span>
+                            <span class="tech-tag">MySQL</span>
+                            <span class="tech-tag">HTML5</span>
+                            <span class="tech-tag more">+4 more</span>
+                        </div>
+                    </div>
+                    <div class="project-footer">
+                        <button type="button" class="deep-dive-link"
+                                data-title="ONLINE EXAMINATION SYSTEM"
+                                data-cat="Java Full Stack • Solo Handcrafted"
+                                data-desc="A dynamic online assessment portal featuring admin question-bank management, timed student exams, session handling, and instant automated result calculation"
+                                data-arch="Core Java &amp; Servlet Architecture: Implemented MVC-style backend architecture using Java Servlets and JDBC to handle HTTP requests, session validation, and database connections. Exam Engine &amp; Automation: Engineered a timed test environment that automatically submits exams upon timer expiration and processes student scores instantly. Database Management: Designed normalized MySQL database schemas to manage users, subjects, question banks, active tests, and student score history. Responsive Frontend: Created clean, student-friendly interfaces with HTML5, CSS3, JavaScript, and Bootstrap."
+                                data-tech="Core Java, Servlets, JDBC, MySQL, HTML5, CSS3, Bootstrap, JavaScript, Apache Tomcat"
+                                data-github="https://github.com/SiddhiArote0420"
+                                data-proof=""
+                                onclick="openProjectDeepDive(this)">
+                            Click for Deep Dive &amp; Architecture →
+                        </button>
+                        <a href="https://github.com/SiddhiArote0420" target="_blank" class="repo-icon-btn" title="View Source on GitHub">
+                            <i class="fa-brands fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= ACADEMIC BACKGROUND & VERIFIED DOCUMENT PROOFS ================= -->
+<section id="education">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-badge emerald">
+                <i class="fa-solid fa-shield-check"></i> 100% Authentic Proofs Available
+            </div>
+            <h2 class="section-title">Academic Background &amp; Verified Document Proofs</h2>
+            <p class="section-subtitle">
+                Transparent academic credentials with attached official marksheets and degree certificates.
+            </p>
+        </div>
+
+        <div class="row g-4 justify-content-center" id="educationGrid">
+            <div class="col-lg-8 col-md-10 mx-auto d-flex align-items-stretch">
+                <div class="card edu-card w-100 border-secondary">
+                    <div>
+                        <div class="edu-top-row">
+                            <div class="edu-icon-box">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                            <div class="edu-meta-right">
+                                <span class="edu-duration-pill">2024 - 2026</span>
+                                <span class="edu-status-text">78.50%</span>
+                            </div>
+                        </div>
+
+                        <h3 class="edu-degree">Master of Computer Science (MCS)</h3>
+                        <div class="edu-inst">Modern College of Arts, Science &amp; Commerce, Ganeshkhind, Pune</div>
+                        <div class="edu-univ">Savitribai Phule Pune University (SPPU)</div>
+                        <p class="edu-desc">Specialization in Advanced Computer Science, Object-Oriented Software Engineering, Database Systems, Web Technologies, and Software Architecture</p>
+                    </div>
+
+                    <div class="proof-section">
+                        <div class="proof-heading">
+                            <i class="fa-regular fa-circle-check"></i> INSPECT VERIFIED PROOFS &amp; MARKSHEETS:
+                        </div>
+                        <div class="proof-pills">
+                            <button type="button" class="proof-pill-btn"
+                                    onclick="openProofModal('Official Final Year Marksheet', 'uploads/edu1_1792518720519_finalYear.pdf', 'Master of Computer Science (MCS) — 78.50%')">
+                                <i class="fa-regular fa-file-lines doc-ic"></i>
+                                <span>Official Final Year Marksheet</span>
+                                <i class="fa-regular fa-eye eye-ic"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= VERIFIED CERTIFICATIONS & HONORS ================= -->
+<section id="certificates">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-badge gold">
+                <i class="fa-solid fa-award"></i> Industry &amp; Academic Certifications
+            </div>
+            <h2 class="section-title">Verified Certifications &amp; Honors</h2>
+            <p class="section-subtitle">
+                Authenticated professional credentials and technical certifications with attached verification proofs.
+            </p>
+        </div>
+
+        <div class="cert-filter-wrap">
+            <div class="cert-filter-box" id="certFilterButtons">
+                <button type="button" class="filter-btn active" onclick="filterCertificates('ALL', this)">All Certifications</button>
+                <button type="button" class="filter-btn" onclick="filterCertificates('Java & DSA (IIT NPTEL)', this)">☕ Java &amp; DSA</button>
+                <button type="button" class="filter-btn" onclick="filterCertificates('Web & Google Certs', this)">🌐 Web &amp; Cloud Certs</button>
+            </div>
+        </div>
+
+        <div class="row g-4 justify-content-center" id="certsGrid">
+            <!-- Certificate 1 -->
+            <div class="col-lg-6 col-md-6 d-flex align-items-stretch cert-col-item"
+                 data-category="Java & DSA (IIT NPTEL)">
+                <div class="card cert-card w-100 border-secondary">
+                    <div>
+                        <div class="cert-top-row">
+                            <div class="cert-icon-box">
+                                <i class="fa-solid fa-medal"></i>
+                            </div>
+                            <span class="cert-date">Jan - Apr 2026</span>
+                        </div>
+
+                        <h3 class="cert-title">Programming in Java - Elite Certification</h3>
+                        <div class="cert-issuer">NPTEL &amp; IIT Kharagpur (Swayam)</div>
+
+                        <div class="cert-score-pill">
+                            Score / Recognition: 75% (Elite)
+                        </div>
+
+                        <p class="cert-desc">Successfully completed a rigorous 12-week proctored certification course in Programming in Java with Elite standing, achieving a consolidated score of 75%</p>
+
+                        <div class="tech-tags">
+                            <span class="tech-tag">Core Java</span>
+                            <span class="tech-tag">OOP</span>
+                            <span class="tech-tag">Multithreading</span>
+                            <span class="tech-tag">Collections Framework</span>
+                            <span class="tech-tag">Exception Handling</span>
+                            <span class="tech-tag">Java Streams</span>
+                            <span class="tech-tag">Servlets</span>
+                            <span class="tech-tag">JDBC</span>
+                        </div>
+                    </div>
+
+                    <div class="cert-footer">
+                        <span class="cert-id" title="ID: NPTEL26CS36S1251802290">ID: NPTEL26CS36S1251802290</span>
+                        <button type="button" class="btn-view-cert"
+                                onclick="openProofModal('Programming in Java - Elite Certification', 'uploads/cert_1792518285256_NPTEL26CS36S125180229004916999.pdf', 'Issued by NPTEL &amp; IIT Kharagpur (Swayam) • Score: 75% (Elite) • Credential ID: NPTEL26CS36S1251802290')">
+                            <i class="fa-regular fa-eye"></i> View Proof
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Certificate 2 -->
+            <div class="col-lg-6 col-md-6 d-flex align-items-stretch cert-col-item"
+                 data-category="Java & DSA (IIT NPTEL)">
+                <div class="card cert-card w-100 border-secondary">
+                    <div>
+                        <div class="cert-top-row">
+                            <div class="cert-icon-box">
+                                <i class="fa-solid fa-medal"></i>
+                            </div>
+                            <span class="cert-date">Jan-Apr 2026</span>
+                        </div>
+
+                        <h3 class="cert-title">Fundamentals of Object Oriented Programming</h3>
+                        <div class="cert-issuer">NPTEL &amp; IIT Roorkee</div>
+
+                        <div class="cert-score-pill">
+                            Score / Recognition: 65%
+                        </div>
+
+                        <p class="cert-desc">Successfully completed a 12-week proctored certification course in Fundamentals of Object Oriented Programming conducted by IIT Roorkee with an Elite badge and a consolidated score of 65%</p>
+
+                        <div class="tech-tags">
+                            <span class="tech-tag">Object-Oriented Programming (OOP)</span>
+                            <span class="tech-tag">Classes &amp; Objects</span>
+                            <span class="tech-tag">Inheritance</span>
+                            <span class="tech-tag">Polymorphism</span>
+                            <span class="tech-tag">Encapsulation</span>
+                            <span class="tech-tag">Abstraction</span>
+                        </div>
+                    </div>
+
+                    <div class="cert-footer">
+                        <span class="cert-id" title="ID: NPTEL26CS87S1551801791">ID: NPTEL26CS87S1551801791</span>
+                        <button type="button" class="btn-view-cert"
+                                onclick="openProofModal('Fundamentals of Object Oriented Programming', 'uploads/cert_1792518502325_NPTL_Certificate.pdf', 'Issued by NPTEL &amp; IIT Roorkee • Score: 65% • Credential ID: NPTEL26CS87S1551801791')">
+                            <i class="fa-regular fa-eye"></i> View Proof
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= WORK EXPERIENCE & INDUSTRY CREDENTIALS ================= -->
+<section id="experience">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-badge">
+                <i class="fa-solid fa-briefcase"></i> Professional Engineering Work
+            </div>
+            <h2 class="section-title">Work Experience &amp; Industry Credentials</h2>
+            <p class="section-subtitle">
+                Hands-on software development roles delivering backend services, RESTful APIs, and database
+                solutions in agile product teams.
+            </p>
+        </div>
+
+        <div class="exp-list" id="experienceList">
+            <div class="card exp-card border-secondary">
+                <div class="exp-top-row">
+                    <div>
+                        <div class="exp-badges">
+                            <span class="badge-intern">Internship</span>
+                            <span class="exp-track">• Full Stack Java Engineering</span>
+                        </div>
+                        <h3 class="exp-role">Java Full Stack Developer Intern</h3>
+                        <div class="exp-company">
+                            <i class="fa-regular fa-building"></i> Creazione Software, Pune
+                        </div>
+                    </div>
+
+                    <div class="exp-meta-right">
+                        <div><i class="fa-regular fa-calendar" style="color:#22d3ee;"></i> Apr 2026 – Oct 2026</div>
+                        <div class="loc"><i class="fa-solid fa-location-dot" style="color:#f43f5e;"></i> Pune</div>
+                    </div>
+                </div>
+
+                <p class="exp-desc">Developed and maintained robust Java backend components using Spring Boot, Spring JDBC, and RESTful APIs under senior developer guidance. Wrote and optimized complex SQL queries and managed MySQL databases for efficient CRUD operations and data handling. Conducted API testing using Postman, debugged application errors, and fixed critical backend bugs to improve system stability. Managed source code and collaborated effectively with the engineering team using Git &amp; GitHub, following standardized SDLC practices.</p>
+
+                <div class="tech-tags">
+                    <span class="tech-tag">Java</span>
+                    <span class="tech-tag">Spring Boot</span>
+                    <span class="tech-tag">Spring JDBC</span>
+                    <span class="tech-tag">REST APIs</span>
+                    <span class="tech-tag">MySQL</span>
+                    <span class="tech-tag">SQL</span>
+                    <span class="tech-tag">Postman</span>
+                    <span class="tech-tag">Git</span>
+                    <span class="tech-tag">GitHub</span>
+                    <span class="tech-tag">SDLC</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= COMPREHENSIVE SKILLS & ENGINEERING COMPETENCIES ================= -->
+<section id="skills">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-badge">
+                <i class="fa-solid fa-microchip"></i> Technical Arsenal
+            </div>
+            <h2 class="section-title">Comprehensive Skills &amp; Engineering<br>Competencies</h2>
+            <p class="section-subtitle">
+                Categorized technical capabilities across the Java Enterprise ecosystem, Web stack, database
+                design, and DevOps tools.
+            </p>
+        </div>
+
+        <div class="d-flex justify-content-center mb-4">
+            <div id="skillFilterButtons" style="background:#0b1120;border:1px solid #1e293b;padding:0.4rem;border-radius:14px;display:inline-flex;flex-wrap:wrap;justify-content:center;gap:0.45rem;">
+                <button type="button" class="skill-tab-btn" onclick="filterSkillsByCat('ALL', this)"
+                        style="background:linear-gradient(90deg, #ea580c, #f59e0b);color:#fff;border:none;padding:0.55rem 1.2rem;border-radius:10px;font-size:0.84rem;font-weight:700;cursor:pointer;">
+                    <i class="fa-solid fa-layer-group"></i> All Skills
+                </button>
+                <button type="button" class="skill-tab-btn" onclick="filterSkillsByCat('Java', this)"
+                        style="background:transparent;color:#94a3b8;border:none;padding:0.55rem 1.2rem;border-radius:10px;font-size:0.84rem;font-weight:700;cursor:pointer;">
+                    ☕ Java Ecosystem
+                </button>
+                <button type="button" class="skill-tab-btn" onclick="filterSkillsByCat('MERN', this)"
+                        style="background:transparent;color:#94a3b8;border:none;padding:0.55rem 1.2rem;border-radius:10px;font-size:0.84rem;font-weight:700;cursor:pointer;">
+                    &lt;/&gt; ⚛️ Web &amp; Frontend
+                </button>
+                <button type="button" class="skill-tab-btn" onclick="filterSkillsByCat('AI', this)"
+                        style="background:transparent;color:#94a3b8;border:none;padding:0.55rem 1.2rem;border-radius:10px;font-size:0.84rem;font-weight:700;cursor:pointer;">
+                    ✨ 🤖 Git &amp; DevOps
+                </button>
+            </div>
+        </div>
+
+        <!-- 2-Column Grid of Individual Skill Cards (Dynamically loaded via JavaScript + JSON) -->
+        <div class="row g-3 justify-content-center" id="skillsGrid"></div>
+    </div>
+</section>
+
+<!-- ================= CURRICULUM VITAE & VERIFIED RESUME PREVIEWS ================= -->
+<section id="resume-section">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-badge">
+                <i class="fa-regular fa-file-lines"></i> Tailored Professional Resumes
+            </div>
+            <h2 class="section-title">Curriculum Vitae &amp; Verified Resume<br>Previews</h2>
+            <p class="section-subtitle">
+                Preview and download my official resume customized with relevant internship experience,
+                production projects, and verified credentials.
+            </p>
+        </div>
+
+        <div class="card border-secondary" style="background:#0b1120;border-radius:18px;padding:1.6rem;">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 pb-3 mb-3" style="border-bottom:1px solid #1e293b;">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width:46px;height:46px;border-radius:12px;background:rgba(0,229,255,0.12);border:1px solid rgba(0,229,255,0.35);color:#00e5ff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">
+                        <i class="fa-regular fa-file-pdf"></i>
+                    </div>
+                    <div>
+                        <h3 style="font-size:1.15rem;font-weight:800;color:#fff;margin:0;">Siddhi Arote — Official Resume</h3>
+                        <div style="font-size:0.78rem;color:#94a3b8;">Full-Stack Software Engineer</div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="uploads/resume_1792514562377_JAVA_DEVELOPER__2_.pdf" target="_blank" class="btn-resume-nav">
+                        <i class="fa-regular fa-eye"></i> Fullscreen
+                    </a>
+                    <a href="uploads/resume_1792514562377_JAVA_DEVELOPER__2_.pdf" download="Siddhi_Arote_Java_Developer_Resume.pdf" class="btn-explore" style="padding:0.55rem 1.15rem;font-size:0.82rem;background:linear-gradient(90deg,#0284c7,#2563eb);">
+                        <i class="fa-solid fa-download"></i> Download PDF
+                    </a>
+                </div>
+            </div>
+
+            <div style="background:#1e293b;border-radius:12px;overflow:hidden;height:580px;">
+                <iframe src="uploads/resume_1792514562377_JAVA_DEVELOPER__2_.pdf" style="width:100%;height:100%;border:none;"></iframe>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= GET IN TOUCH / CONTACT SECTION ================= -->
+<section id="contact">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-badge">
+                <i class="fa-regular fa-envelope"></i> Get in Touch
+            </div>
+            <h2 class="section-title">Let's Build Something Exceptional Together</h2>
+            <p class="section-subtitle">
+                Available for immediate full-time software developer roles, technical interviews, and engineering
+                internships. Reach out via email, phone, or LinkedIn.
+            </p>
+        </div>
+
+        <div class="row g-4 align-items-stretch">
+            <!-- Left Column: Stacked Info Cards -->
+            <div class="col-lg-5 d-flex flex-column justify-content-between gap-3">
+                <!-- Card 1: Direct Email -->
+                <div class="card border-secondary" style="background:#0d1323;border-radius:16px;padding:1.35rem 1.5rem;">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="width:44px;height:44px;border-radius:12px;background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;display:flex;align-items:center;justify-content:center;">
+                                <i class="fa-regular fa-envelope"></i>
+                            </div>
+                            <div>
+                                <div style="font-size:0.74rem;color:#94a3b8;">Direct Email</div>
+                                <a href="mailto:siddhiarote5@gmail.com" style="font-size:0.98rem;font-weight:800;color:#ffffff;">siddhiarote5@gmail.com</a>
+                            </div>
+                        </div>
+                        <button type="button" class="repo-icon-btn" onclick="copyTextToClipboard('siddhiarote5@gmail.com', this)" title="Copy Email">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 2: Phone & WhatsApp -->
+                <div class="card border-secondary" style="background:#0d1323;border-radius:16px;padding:1.35rem 1.5rem;">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="width:44px;height:44px;border-radius:12px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);color:#34d399;display:flex;align-items:center;justify-content:center;">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <div>
+                                <div style="font-size:0.74rem;color:#94a3b8;">Phone &amp; WhatsApp</div>
+                                <div style="font-size:0.98rem;font-weight:800;color:#ffffff;">+91 9822076804</div>
+                            </div>
+                        </div>
+                        <button type="button" class="repo-icon-btn" onclick="copyTextToClipboard('+91 9822076804', this)" title="Copy Phone">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 3: Current Location -->
+                <div class="card border-secondary" style="background:#0d1323;border-radius:16px;padding:1.35rem 1.5rem;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width:44px;height:44px;border-radius:12px;background:rgba(244,63,94,0.12);border:1px solid rgba(244,63,94,0.3);color:#fb7185;display:flex;align-items:center;justify-content:center;">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:0.74rem;color:#94a3b8;">Current Location</div>
+                            <div style="font-size:0.98rem;font-weight:800;color:#ffffff;">Pune, Maharashtra, India</div>
+                            <div style="font-size:0.74rem;color:#64748b;">(Open to Hybrid / Onsite / Remote roles)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Social Bar -->
+                <div class="card border-secondary" style="background:#0d1323;border-radius:16px;padding:1rem 1.5rem;">
+                    <div class="d-flex justify-content-around align-items-center" style="font-size:0.84rem;font-weight:700;color:#cbd5e1;">
+                        <a href="https://linkedin.com/in/siddhi-arote-3b6bb731a" target="_blank"><i class="fa-brands fa-linkedin-in me-1"></i> LinkedIn</a>
+                        <span style="color:#334155;">•</span>
+                        <a href="https://github.com/SiddhiArote0420" target="_blank"><i class="fa-brands fa-github me-1"></i> GitHub</a>
+                        <span style="color:#334155;">•</span>
+                        <a href="https://leetcode.com/u/Arote_Siddhi" target="_blank">LeetCode</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Send Direct Message Card -->
+            <div class="col-lg-7">
+                <div class="card border-secondary h-100" style="background:#0d1323;border-radius:18px;padding:2rem;">
+                    <h3 style="font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:1.4rem;display:flex;align-items:center;gap:0.55rem;">
+                        <i class="fa-regular fa-comment-dots" style="color:#00e5ff;"></i> Send Direct Message
+                    </h3>
+
+                    <form onsubmit="return sendDirectMail(event)">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Your Name *</label>
+                                <input type="text" id="contactName" class="form-control" placeholder="e.g. John Doe" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Your Email *</label>
+                                <input type="email" id="contactEmail" class="form-control" placeholder="e.g. recruiter@company.com" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Subject</label>
+                            <input type="text" id="contactSubject" class="form-control" placeholder="e.g. Interview Invitation / Job Opportunity" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Your Message *</label>
+                            <textarea id="contactMessage" rows="4" class="form-control" placeholder="Tell me about the role, team, or opportunity..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn-explore w-100 justify-content-center py-3" style="background:linear-gradient(90deg, #2563eb 0%, #00d2b8 100%);">
+                            <i class="fa-regular fa-paper-plane"></i> Send Email to Siddhi Arote
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer style="border-top:1px solid rgba(255,255,255,0.06);padding:2.4rem 0;background:#050811;">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <strong style="font-size:1.02rem;color:#fff;">Siddhi Arote</strong>
+                <span style="background:rgba(0,229,255,0.12);border:1px solid rgba(0,229,255,0.3);color:#00e5ff;font-size:0.68rem;font-weight:700;padding:0.15rem 0.6rem;border-radius:999px;">
+                    Full-Stack Developer
+                </span>
+            </div>
+            <div style="font-size:0.78rem;color:#64748b;">
+                Crafted with HTML5, JSP, Bootstrap 5, JavaScript + JSON &amp; verified academic credentials.
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-3" style="font-size:0.82rem;color:#94a3b8;">
+            <a href="https://github.com/SiddhiArote0420" target="_blank">GitHub</a>
+            <span>•</span>
+            <a href="https://linkedin.com/in/siddhi-arote-3b6bb731a" target="_blank">LinkedIn</a>
+            <span>•</span>
+            <a href="https://leetcode.com/u/Arote_Siddhi" target="_blank">LeetCode</a>
+            <span>•</span>
+            <a href="mailto:siddhiarote5@gmail.com">Email</a>
+        </div>
+
+        <a href="#top" class="btn-resume-nav" style="border-radius:999px;padding:0.5rem 1.1rem;">
+            Back to top <i class="fa-solid fa-arrow-up"></i>
+        </a>
+    </div>
+</footer>
+
+<!-- ================= MODAL 1: PROJECT DEEP DIVE & ARCHITECTURE ================= -->
+<div class="modal-backdrop" id="projectModal">
+    <div class="modal-window">
+        <div class="modal-header">
+            <div>
+                <div id="pmCategory" style="font-size:0.74rem;color:#00e5ff;font-weight:700;text-transform:uppercase;"></div>
+                <h3 id="pmTitle" style="font-size:1.35rem;font-weight:800;color:#fff;margin-top:0.2rem;"></h3>
+            </div>
+            <button type="button" class="modal-close" onclick="closeModal('projectModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <h4 style="font-size:0.8rem;text-transform:uppercase;color:#94a3b8;margin-bottom:0.4rem;">Executive Overview</h4>
+            <p id="pmDesc" style="font-size:0.92rem;color:#e2e8f0;margin-bottom:1.3rem;"></p>
+
+            <h4 style="font-size:0.8rem;text-transform:uppercase;color:#10b981;margin-bottom:0.4rem;">
+                <i class="fa-solid fa-diagram-project"></i> System Architecture &amp; Engineering Deep-Dive
+            </h4>
+            <div id="pmArch" style="background:#070b14;border:1px solid #1e293b;padding:1rem;border-radius:12px;font-size:0.88rem;color:#cbd5e1;margin-bottom:1.3rem;"></div>
+
+            <h4 style="font-size:0.8rem;text-transform:uppercase;color:#94a3b8;margin-bottom:0.5rem;">Technology Stack</h4>
+            <div id="pmTech" class="tech-tags" style="margin-bottom:1.4rem;"></div>
+
+            <div class="d-flex gap-2 flex-wrap">
+                <a id="pmGithub" href="#" target="_blank" class="btn-explore" style="padding:0.65rem 1.2rem;font-size:0.82rem;">
+                    <i class="fa-brands fa-github"></i> View Codebase on GitHub
+                </a>
+                <button type="button" class="btn-dark-cta" onclick="closeModal('projectModal')" style="padding:0.65rem 1.2rem;font-size:0.82rem;">
+                    Close Window
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= MODAL 2: VERIFIED PROOF / CERTIFICATE / RESUME INSPECTOR ================= -->
+<div class="modal-backdrop" id="proofModal">
+    <div class="modal-window">
+        <div class="modal-header">
+            <div>
+                <div style="font-size:0.72rem;color:#10b981;font-weight:700;text-transform:uppercase;">
+                    <i class="fa-solid fa-shield-check"></i> Verified Credential &amp; Document Inspector
+                </div>
+                <h3 id="prfTitle" style="font-size:1.2rem;font-weight:800;color:#fff;margin-top:0.2rem;"></h3>
+            </div>
+            <button type="button" class="modal-close" onclick="closeModal('proofModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <p id="prfSub" style="font-size:0.86rem;color:#94a3b8;margin-bottom:1.1rem;"></p>
+            <div id="prfViewerBox" style="background:#070b14;border:1px solid #1e293b;border-radius:12px;padding:1.25rem;text-align:center;min-height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            </div>
+            <div class="mt-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <a id="prfDownloadBtn" href="#" target="_blank" class="btn-explore" style="padding:0.6rem 1.15rem;font-size:0.82rem;display:none;">
+                    <i class="fa-solid fa-download"></i> Open / Download Original File
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= MODAL 3: RECRUITER QUICK-VIEW MODULE ================= -->
+<div class="modal-backdrop" id="recruiterModal">
+    <div class="modal-window" style="max-width:920px;">
+        <div class="modal-header" style="background:linear-gradient(90deg, rgba(147,51,234,0.18), rgba(99,102,241,0.15));">
+            <div>
+                <div style="font-size:0.72rem;color:#c084fc;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;">
+                    ✨ 60-Second Executive Recruiter Dossier
+                </div>
+                <h3 style="font-size:1.35rem;font-weight:800;color:#fff;margin-top:0.15rem;">
+                    Siddhi Arote — Candidate Quick-View
+                </h3>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+                <a href="recruiter.html" class="btn-recruiter" style="padding:0.42rem 0.85rem;font-size:0.76rem;">
+                    Open Full Recruiter Page ↗
+                </a>
+                <button type="button" class="modal-close" onclick="closeModal('recruiterModal')">✕</button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="row g-3 mb-4">
+                <div class="col-md-3 col-6">
+                    <div style="background:#080d19;border:1px solid rgba(245,158,11,0.4);padding:0.9rem;border-radius:12px;">
+                        <div style="font-size:0.7rem;color:#fbbf24;font-weight:700;">HIGHLIGHT</div>
+                        <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-top:0.2rem;">NPTEL Elite</div>
+                        <div style="font-size:0.74rem;color:#94a3b8;">IIT Kharagpur &amp; Roorkee</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div style="background:#080d19;border:1px solid #1e293b;padding:0.9rem;border-radius:12px;">
+                        <div style="font-size:0.7rem;color:#10b981;font-weight:700;">QUALIFICATIONS</div>
+                        <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-top:0.2rem;">MCS (78.50%)</div>
+                        <div style="font-size:0.74rem;color:#94a3b8;">SPPU Pune</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div style="background:#080d19;border:1px solid #1e293b;padding:0.9rem;border-radius:12px;">
+                        <div style="font-size:0.7rem;color:#38bdf8;font-weight:700;">EXPERIENCE</div>
+                        <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-top:0.2rem;">Java Intern</div>
+                        <div style="font-size:0.74rem;color:#94a3b8;">Creazione Software</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div style="background:#080d19;border:1px solid #1e293b;padding:0.9rem;border-radius:12px;">
+                        <div style="font-size:0.7rem;color:#a855f7;font-weight:700;">PROJECTS &amp; SKILLS</div>
+                        <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-top:0.2rem;">2 Projects • 10 Skills</div>
+                        <div style="font-size:0.74rem;color:#94a3b8;">Production Ready</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="recruiter.html" class="btn-recruiter">
+                        <i class="fa-solid fa-table-columns"></i> Open Dedicated Recruiter Portal
+                    </a>
+                    <a href="#contact" onclick="closeModal('recruiterModal')" class="btn-explore" style="padding:0.6rem 1.15rem;font-size:0.82rem;">
+                        <i class="fa-regular fa-calendar-check"></i> Schedule Interview
+                    </a>
+                </div>
+                <div style="font-size:0.8rem;color:#94a3b8;">
+                    Direct Contact: <strong style="color:#fff;">siddhiarote5@gmail.com</strong> | <strong style="color:#fff;">+91 9822076804</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5.3 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    window.PORTFOLIO_CTX = '';
+    var ctxPath = '';
+
+    (function initRotatingRoles() {
+        var roles = [
+            'Java Full Stack Developer',
+            'Full-Stack Software Engineer',
+            'Junior Java Developer',
+            'Software Development Engineer'
+        ];
+        var roleIdx = 0;
+        var heroRoleEl = document.getElementById('heroRotatingRole');
+        var photoRoleEl = document.getElementById('photoCardRotatingRole');
+
+        if (heroRoleEl) heroRoleEl.textContent = roles[0];
+        if (photoRoleEl) photoRoleEl.textContent = roles[0];
+
+        setInterval(function () {
+            roleIdx = (roleIdx + 1) % roles.length;
+            if (heroRoleEl) heroRoleEl.classList.add('fade-out');
+            if (photoRoleEl) photoRoleEl.classList.add('fade-out');
+
+            setTimeout(function () {
+                if (heroRoleEl) {
+                    heroRoleEl.textContent = roles[roleIdx];
+                    heroRoleEl.classList.remove('fade-out');
+                }
+                if (photoRoleEl) {
+                    photoRoleEl.textContent = roles[roleIdx];
+                    photoRoleEl.classList.remove('fade-out');
+                }
+            }, 380);
+        }, 3000);
+    })();
+
+    function filterProjects(type, value, btn) {
+        var buttons, i;
+        if (type === 'category') {
+            activeProjectCategory = value;
+            buttons = document.querySelectorAll('#projectCategoryFilters .filter-btn');
+            for (i = 0; i < buttons.length; i++) buttons[i].classList.remove('active');
+        } else {
+            activeProjectMethod = value;
+            buttons = document.querySelectorAll('#projectMethodFilters .filter-btn');
+            for (i = 0; i < buttons.length; i++) buttons[i].classList.remove('active');
+        }
+        btn.classList.add('active');
+        applyProjectFilters();
+    }
+
+    function applyProjectFilters() {
+        if (portfolioJsonData && portfolioJsonData.projects && portfolioJsonData.projects.length > 0) {
+            renderProjectsFromJson(portfolioJsonData.projects);
+            return;
+        }
+    }
+
+    function filterCertificates(cat, btn) {
+        var btns = document.querySelectorAll('#certFilterButtons .filter-btn');
+        for (var b = 0; b < btns.length; b++) btns[b].classList.remove('active');
+        btn.classList.add('active');
+        var items = document.querySelectorAll('#certsGrid .cert-col-item');
+        var visible = 0;
+        for (var i = 0; i < items.length; i++) {
+            var col = items[i];
+            var c = col.getAttribute('data-category') || '';
+            var show = (cat === 'ALL' || c.toLowerCase() === cat.toLowerCase());
+            col.style.display = show ? 'flex' : 'none';
+            if (show) visible++;
+        }
+        var newClass = visible === 1 ? 'col-lg-8 col-md-10 mx-auto' : (visible === 2 ? 'col-lg-6 col-md-6' : 'col-lg-4 col-md-6');
+        for (var j = 0; j < items.length; j++) {
+            if (items[j].style.display !== 'none') {
+                items[j].className = newClass + ' d-flex align-items-stretch cert-col-item';
+            }
+        }
+    }
+
+    function openProjectDeepDive(btn) {
+        document.getElementById('pmTitle').textContent = btn.getAttribute('data-title');
+        document.getElementById('pmCategory').textContent = btn.getAttribute('data-cat');
+        document.getElementById('pmDesc').textContent = btn.getAttribute('data-desc');
+        document.getElementById('pmArch').textContent = btn.getAttribute('data-arch') || 'Production-grade modular architecture with clean separation of concerns, REST API endpoints, and optimized database persistence.';
+        var techWrap = document.getElementById('pmTech');
+        techWrap.innerHTML = '';
+        var techParts = (btn.getAttribute('data-tech') || '').split(',');
+        for (var i = 0; i < techParts.length; i++) {
+            var t = techParts[i].replace(/^\s+|\s+$/g, '');
+            if (t) {
+                var sp = document.createElement('span');
+                sp.className = 'tech-tag';
+                sp.textContent = t;
+                techWrap.appendChild(sp);
+            }
+        }
+        var gh = btn.getAttribute('data-github');
+        document.getElementById('pmGithub').href = gh && gh.replace(/^\s+|\s+$/g, '') && gh !== '#' ? gh : 'https://github.com/SiddhiArote0420';
+        document.getElementById('projectModal').classList.add('open');
+    }
+
+    function openProofModal(title, fileUrl, subtitle) {
+        document.getElementById('prfTitle').textContent = title;
+        document.getElementById('prfSub').textContent = subtitle || '';
+        var box = document.getElementById('prfViewerBox');
+        var dlBtn = document.getElementById('prfDownloadBtn');
+
+        if (fileUrl && fileUrl.replace(/^\s+|\s+$/g, '') !== '') {
+            var fullUrl = fileUrl;
+            dlBtn.href = fullUrl;
+            dlBtn.style.display = 'inline-flex';
+            var lower = fileUrl.toLowerCase();
+            if (
+                lower.indexOf('.png') !== -1 ||
+                lower.indexOf('.jpg') !== -1 ||
+                lower.indexOf('.jpeg') !== -1 ||
+                lower.indexOf('.webp') !== -1 ||
+                lower.indexOf('.gif') !== -1
+            ) {
+                box.innerHTML = '<img src="' + fullUrl + '" style="max-width:100%;max-height:460px;border-radius:8px;border:1px solid #334155;" alt="Verified Proof">';
+            } else if (lower.indexOf('.pdf') !== -1) {
+                box.innerHTML = '<iframe src="' + fullUrl + '" style="width:100%;height:460px;border:none;border-radius:8px;"></iframe>';
+            } else {
+                box.innerHTML = '<i class="fa-solid fa-file-shield" style="font-size:3rem;color:#00e5ff;margin-bottom:0.8rem;"></i>' +
+                    '<div style="font-weight:700;color:#fff;">Verified Credential Attached</div>' +
+                    '<div style="font-size:0.82rem;color:#94a3b8;margin-top:0.3rem;">Click "Open / Download Original File" below to inspect the document.</div>';
+            }
+        }
+        document.getElementById('proofModal').classList.add('open');
+    }
+
+    function openRecruiterModal() {
+        document.getElementById('recruiterModal').classList.add('open');
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('open');
+    }
+
+    function sendDirectMail(e) {
+        e.preventDefault();
+        var name = document.getElementById('contactName').value;
+        var email = document.getElementById('contactEmail').value;
+        var subj = document.getElementById('contactSubject').value;
+        var msg = document.getElementById('contactMessage').value;
+        var mailto = 'mailto:siddhiarote5@gmail.com?subject=' + encodeURIComponent(subj + ' — from ' + name) +
+                     '&body=' + encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\n' + msg);
+        window.location.href = mailto;
+        return false;
+    }
+
+    window.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            var modals = document.querySelectorAll('.modal-backdrop.open');
+            for (var i = 0; i < modals.length; i++) {
+                modals[i].classList.remove('open');
+            }
+        }
+    });
+</script>
+<!-- Dynamic JavaScript + JSON Loader for Skills & Projects -->
+<script src="assets/portfolio.js"></script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+{
+  "profile": {
+    "logoInitials": "SA",
+    "shortName": "Siddhi Arote",
+    "navSubtitle": "Full-Stack Developer",
+    "fullName": "Siddhi Arote",
+    "greetingText": "HELLO, I AM",
+    "roleTitle": "Full-Stack Software Engineer",
+    "bio": "Welcome to my portfolio! Update this bio, upload your photo & resume, and add your own skills, projects, education, certificates, and work experience directly from the Admin CMS panel.",
+    "statusText": "Open to Full-Time & Internship Opportunities",
+    "location": "Pune, Maharashtra, India",
+    "highlightBadge1": "Verified Academic & Project Credentials",
+    "highlightBadge2": "Full-Stack Software Engineer",
+    "topCardBadgeTitle": "Verified",
+    "topCardBadgeSub": "Top Credentials",
+    "bottomCardBadgeTitle": "Portfolio",
+    "bottomCardBadgeSub": "Flagship Projects",
+    "profilePicUrl": "uploads/profile_1792514562348_pic.jpeg",
+    "resumeUrl": "uploads/resume_1792514562377_JAVA_DEVELOPER__2_.pdf",
+    "goldProofUrl": "",
+    "githubUrl": "https://github.com/SiddhiArote0420",
+    "linkedinUrl": "https://linkedin.com/in/siddhi-arote-3b6bb731a",
+    "leetcodeUrl": "https://leetcode.com/u/Arote_Siddhi",
+    "email": "siddhiarote5@gmail.com",
+    "phone": "+91 9822076804"
+  },
+  "projects": [
+    {
+      "id": 9,
+      "title": "RESTAURANT MANAGEMENT SYSTEM",
+      "category": "Java Full Stack",
+      "buildMethod": "Solo Handcrafted",
+      "featured": true,
+      "description": "A full-stack, role-based restaurant management web application built to streamline daily restaurant operations, table management, order tracking, and billing with responsive staff dashboards",
+      "architectureDetails": "Role-Based Access Control (RBAC): Designed customized UI workflows and access levels for 4 distinct user roles: Admin, Receptionist, Waiter, and Chef.    RESTful Backend: Developed secure REST APIs using Spring Boot and Spring JDBC to execute optimized CRUD operations for tables, categories, food items, orders, and payments.    Database & Testing: Structured relational data models in MySQL and rigorously tested API endpoints using Postman for reliable error handling and smooth data flow.    Frontend UI: Built responsive, interactive staff interfaces using JSP, HTML5, CSS3, JavaScript, and Bootstrap.",
+      "githubUrl": "",
+      "liveUrl": "",
+      "proofUrl": "",
+      "techStack": ["Spring Boot", "Spring JDBC", "REST APIs", "MySQL", "JSP", "HTML5", "CSS3", "JavaScript", "Bootstrap", "Postman"]
+    },
+    {
+      "id": 10,
+      "title": "ONLINE EXAMINATION SYSTEM",
+      "category": "Java Full Stack",
+      "buildMethod": "Solo Handcrafted",
+      "featured": true,
+      "description": "A dynamic online assessment portal featuring admin question-bank management, timed student exams, session handling, and instant automated result calculation",
+      "architectureDetails": "Core Java & Servlet Architecture: Implemented MVC-style backend architecture using Java Servlets and JDBC to handle HTTP requests, session validation, and database connections.    Exam Engine & Automation: Engineered a timed test environment that automatically submits exams upon timer expiration and processes student scores instantly.    Database Management: Designed normalized MySQL database schemas to manage users, subjects, question banks, active tests, and student score history.    Responsive Frontend: Created clean, student-friendly interfaces with HTML5, CSS3, JavaScript, and Bootstrap.",
+      "githubUrl": "",
+      "liveUrl": "",
+      "proofUrl": "",
+      "techStack": ["Core Java", "Servlets", "JDBC", "MySQL", "HTML5", "CSS3", "Bootstrap", "JavaScript", "Apache Tomcat"]
+    }
+  ],
+  "educations": [
+    {
+      "id": 5,
+      "degree": "Master of Computer Science (MCS)",
+      "institution": "Modern College of Arts, Science & Commerce, Ganeshkhind, Pune",
+      "university": "Savitribai Phule Pune University (SPPU)",
+      "duration": "2024 - 2026",
+      "statusText": "78.50%",
+      "description": "Specialization in Advanced Computer Science, Object-Oriented Software Engineering, Database Systems, Web Technologies, and Software Architecture",
+      "proof1Title": "",
+      "proof1Url": "uploads/edu1_1792518720519_finalYear.pdf",
+      "proof2Title": "",
+      "proof2Url": "",
+      "proof3Title": "",
+      "proof3Url": ""
+    }
+  ],
+  "certificates": [
+    {
+      "id": 6,
+      "title": "Programming in Java - Elite Certification",
+      "issuer": "NPTEL & IIT Kharagpur (Swayam)",
+      "issueDate": "Jan - Apr 2026",
+      "scoreBadge": "75% (Elite)",
+      "category": "Java & DSA (IIT NPTEL)",
+      "eliteGold": false,
+      "topRibbonText": "ELITE + GOLD MEDALIST",
+      "description": "Successfully completed a rigorous 12-week proctored certification course in Programming in Java with Elite standing, achieving a consolidated score of 75%",
+      "skillTags": "Core Java, OOP, Multithreading, Collections Framework, Exception Handling, Java Streams, Servlets, JDBC, Java Swing",
+      "credentialId": "NPTEL26CS36S1251802290",
+      "proofUrl": "uploads/cert_1792518285256_NPTEL26CS36S125180229004916999.pdf"
+    },
+    {
+      "id": 7,
+      "title": "Fundamentals of Object Oriented Programming",
+      "issuer": "NPTEL & IIT Roorkee",
+      "issueDate": "Jan-Apr 2026",
+      "scoreBadge": "65%",
+      "category": "Java & DSA (IIT NPTEL)",
+      "eliteGold": false,
+      "topRibbonText": "ELITE CERTIFIED",
+      "description": "Successfully completed a 12-week proctored certification course in Fundamentals of Object Oriented Programming conducted by IIT Roorkee with an Elite badge and a consolidated score of 65%",
+      "skillTags": "Object-Oriented Programming (OOP), Classes & Objects, Inheritance, Polymorphism, Encapsulation, Abstraction, Problem Solving",
+      "credentialId": "NPTEL26CS87S1551801791",
+      "proofUrl": "uploads/cert_1792518502325_NPTL_Certificate.pdf"
+    }
+  ],
+  "experiences": [
+    {
+      "id": 4,
+      "roleTitle": "Java Full Stack Developer Intern",
+      "company": "Creazione Software, Pune",
+      "expType": "Internship",
+      "trackName": "Full Stack Java Engineering",
+      "duration": "Apr 2026 – Oct 2026",
+      "location": "Pune",
+      "description": "Developed and maintained robust Java backend components using Spring Boot, Spring JDBC, and RESTful APIs under senior developer guidance.    Wrote and optimized complex SQL queries and managed MySQL databases for efficient CRUD operations and data handling.    Conducted API testing using Postman, debugged application errors, and fixed critical backend bugs to improve system stability.    Managed source code and collaborated effectively with the engineering team using Git & GitHub, following standardized SDLC practices",
+      "techStack": "Java, Spring Boot, Spring JDBC, REST APIs, MySQL, SQL, Postman, Git, GitHub, SDLC",
+      "proof1Title": "",
+      "proof1Url": "",
+      "proof2Title": "",
+      "proof2Url": "",
+      "proof3Title": "",
+      "proof3Url": ""
+    }
+  ],
+  "skills": [
+    {
+      "id": 30,
+      "category": "Java Enterprise & Backend",
+      "skillName": "Core Java",
+      "proficiency": 90,
+      "badgeText": ""
+    },
+    {
+      "id": 31,
+      "category": "Java Enterprise & Backend",
+      "skillName": "servlet",
+      "proficiency": 85,
+      "badgeText": ""
+    },
+    {
+      "id": 32,
+      "category": "Java Enterprise & Backend",
+      "skillName": "JDBC",
+      "proficiency": 90,
+      "badgeText": ""
+    },
+    {
+      "id": 33,
+      "category": "Java Enterprise & Backend",
+      "skillName": "Spring MVC",
+      "proficiency": 90,
+      "badgeText": ""
+    },
+    {
+      "id": 34,
+      "category": "Java Enterprise & Backend",
+      "skillName": "Spring JDBC",
+      "proficiency": 90,
+      "badgeText": ""
+    },
+    {
+      "id": 35,
+      "category": "Java Enterprise & Backend",
+      "skillName": "Spring Boot",
+      "proficiency": 90,
+      "badgeText": ""
+    },
+    {
+      "id": 36,
+      "category": "Java Enterprise & Backend",
+      "skillName": "HTML5",
+      "proficiency": 90,
+      "badgeText": ""
+    },
+    {
+      "id": 37,
+      "category": "Java Enterprise & Backend",
+      "skillName": "CSS3",
+      "proficiency": 90,
+      "badgeText": ""
+    },
+    {
+      "id": 38,
+      "category": "Java Enterprise & Backend",
+      "skillName": "PL/SQL",
+      "proficiency": 90,
+      "badgeText": ""
+    },
+    {
+      "id": 39,
+      "category": "Java Enterprise & Backend",
+      "skillName": "Git/GitHub",
+      "proficiency": 80,
+      "badgeText": ""
+    }
+  ],
+  "counts": {
+    "projects": 2,
+    "skills": 10,
+    "certificates": 2,
+    "education": 1,
+    "experience": 1
+  }
+}

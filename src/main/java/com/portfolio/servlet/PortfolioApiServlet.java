@@ -206,6 +206,35 @@ public class PortfolioApiServlet extends HttpServlet {
             } catch (Exception ignored) {
             }
         }
+        pushToGitHubLiveAsync();
+    }
+
+    public static boolean pushToGitHubLiveSync() {
+        try {
+            File repoDir = new File("D:/PROJECTdATA/PROJECTdATA/SmartCareerRecommendationSystem/Portfolio");
+            if (!new File(repoDir, ".git").exists()) return false;
+
+            runGitCmd(repoDir, "git", "add", "-A");
+            runGitCmd(repoDir, "git", "commit", "-m", "Auto-sync portfolio updates from Admin CMS");
+            int code = runGitCmd(repoDir, "git", "push", "origin", "main");
+            return code == 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static void pushToGitHubLiveAsync() {
+        new Thread(() -> {
+            pushToGitHubLiveSync();
+        }).start();
+    }
+
+    private static int runGitCmd(File dir, String... cmd) throws Exception {
+        ProcessBuilder pb = new ProcessBuilder(cmd);
+        pb.directory(dir);
+        pb.redirectErrorStream(true);
+        Process p = pb.start();
+        return p.waitFor();
     }
 
     private static String esc(String s) {

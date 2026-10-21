@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Admin CMS — Manage Portfolio (Skills, Certificates, Projects)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/portfolio.css">
+    <style>
+        .admin-layout { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100vh - 68px); }
+        .admin-sidebar { background: #080d19; border-right: 1px solid #1e293b; padding: 1.4rem 1rem; display: flex; flex-direction: column; gap: 0.4rem; }
+        .admin-tab-btn { display: flex; align-items: center; gap: 0.7rem; padding: 0.72rem 0.95rem; border-radius: 10px; font-size: 0.85rem; font-weight: 600; color: #94a3b8; background: transparent; border: 1px solid transparent; cursor: pointer; text-align: left; transition: all 0.2s; }
+        .admin-tab-btn:hover { color: #fff; background: #111a2e; }
+        .admin-tab-btn.active { background: rgba(0, 229, 255, 0.12); color: #00e5ff; border-color: rgba(0, 229, 255, 0.35); }
+        .admin-main { padding: 2rem 2.4rem; max-width: 1120px; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        .admin-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+        .admin-table th, .admin-table td { padding: 0.78rem 0.9rem; border-bottom: 1px solid #1e293b; text-align: left; }
+        .admin-table th { color: #94a3b8; font-weight: 700; background: #080d19; }
+        .btn-sm-edit { background: rgba(59, 130, 246, 0.16); border: 1px solid rgba(59, 130, 246, 0.4); color: #60a5fa; padding: 0.3rem 0.65rem; border-radius: 6px; font-size: 0.74rem; font-weight: 600; cursor: pointer; }
+        .btn-sm-del { background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.4); color: #fda4af; padding: 0.3rem 0.65rem; border-radius: 6px; font-size: 0.74rem; font-weight: 600; cursor: pointer; }
+        @media (max-width: 920px) {
+            .admin-layout { grid-template-columns: 1fr; }
+            .admin-sidebar { flex-direction: row; flex-wrap: wrap; border-right: none; border-bottom: 1px solid #1e293b; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN OVERLAY -->
+<div id="adminLoginGate" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;">
+    <div class="edu-card" style="width:100%;max-width:430px;padding:2.2rem;">
+        <div style="text-align:center;margin-bottom:1.6rem;">
+            <div class="brand-logo" style="width:52px;height:52px;margin:0 auto 0.85rem;font-size:1.2rem;">SA</div>
+            <h1 style="font-size:1.45rem;font-weight:900;color:#fff;">Siddhi Arote — Live Admin CMS</h1>
+            <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.25rem;">
+                Sign in to add, edit, or remove skills, certificates, projects, education &amp; experience on your Live Portfolio.
+            </p>
+        </div>
+        <div id="loginErrorBox" style="display:none;background:rgba(244,63,94,0.15);border:1px solid #f43f5e;color:#fda4af;padding:0.7rem 1rem;border-radius:10px;font-size:0.8rem;margin-bottom:1.1rem;text-align:center;">
+            Invalid credentials! Default: <strong>admin / admin123</strong>
+        </div>
+        <form onsubmit="return handleLiveAdminLogin(event)">
+            <div class="form-group">
+                <label class="form-label">Admin Username</label>
+                <input type="text" id="loginUser" class="form-control" value="admin" required>
+            </div>
+            <div class="form-group" style="margin-bottom:1.4rem;">
+                <label class="form-label">Admin Password</label>
+                <input type="password" id="loginPass" class="form-control" value="admin123" required>
+            </div>
+            <button type="submit" class="btn-explore" style="width:100%;justify-content:center;">
+                <i class="fa-solid fa-lock-open"></i> Sign In to Live Admin
+            </button>
+        </form>
+        <div style="margin-top:1.4rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;font-size:0.78rem;color:#64748b;">
+            <span>Default: <strong style="color:#cbd5e1;">admin / admin123</strong></span>
+            <a href="index.html" style="color:#00e5ff;font-weight:600;">← Back to Live Portfolio</a>
+        </div>
+    </div>
+</div>
+
+<!-- DASHBOARD CONTAINER -->
+<div id="adminAppWrap" style="display:none;">
+    <header class="navbar">
+        <div class="navbar-inner">
+            <div class="brand">
+                <div class="brand-logo">SA</div>
+                <div class="brand-text">
+                    <div class="brand-name">Live Portfolio Admin CMS <span class="online-dot"></span></div>
+                    <div class="brand-sub">Add / Remove Skills, Certificates, Projects, Education &amp; Experience</div>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <button type="button" class="btn-explore" onclick="publishToGitHubNow()" style="padding:0.48rem 1rem;font-size:0.8rem;">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Save &amp; Publish to Live GitHub
+                </button>
+                <a href="index.html" target="_blank" class="btn-resume-nav">
+                    <i class="fa-solid fa-up-right-from-square"></i> View Live Portfolio
+                </a>
+                <button type="button" onclick="logoutLiveAdmin()" class="btn-admin-nav" style="color:#fda4af;border-color:rgba(244,63,94,0.35);">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <button type="button" class="admin-tab-btn active" onclick="switchTab('skills', this)">
+                <i class="fa-solid fa-microchip"></i> Skills (<span id="cnt_skills">0</span>)
+            </button>
+            <button type="button" class="admin-tab-btn" onclick="switchTab('certificates', this)">
+                <i class="fa-solid fa-award"></i> Certificates (<span id="cnt_certs">0</span>)
+            </button>
+            <button type="button" class="admin-tab-btn" onclick="switchTab('projects', this)">
+                <i class="fa-solid fa-code-branch"></i> Projects (<span id="cnt_projects">0</span>)
+            </button>
+            <button type="button" class="admin-tab-btn" onclick="switchTab('education', this)">
+                <i class="fa-solid fa-graduation-cap"></i> Education (<span id="cnt_edu">0</span>)
+            </button>
+            <button type="button" class="admin-tab-btn" onclick="switchTab('experience', this)">
+                <i class="fa-solid fa-briefcase"></i> Experience (<span id="cnt_exp">0</span>)
+            </button>
+            <button type="button" class="admin-tab-btn" onclick="switchTab('github', this)">
+                <i class="fa-brands fa-github"></i> GitHub Live Sync Settings
+            </button>
+        </aside>
+
+        <main class="admin-main">
+            <div id="statusAlert" style="display:none;background:rgba(16,185,129,0.16);border:1px solid #10b981;color:#34d399;padding:0.85rem 1.2rem;border-radius:12px;margin-bottom:1.5rem;font-size:0.86rem;font-weight:600;"></div>
+
+            <!-- TAB 1: SKILLS -->
+            <div id="tab-skills" class="tab-panel active">
+                <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:1.2rem;">Add / Edit / Remove Technical Skills</h2>
+                <form onsubmit="return saveSkillItem(event)" class="edu-card" style="margin-bottom:2rem;">
+                    <input type="hidden" id="sk_id" value="0">
+                    <div class="form-grid" style="grid-template-columns:1.2fr 1.2fr 110px 140px auto;align-items:end;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="form-label">Category *</label>
+                            <select id="sk_cat" class="form-control">
+                                <option value="Java Enterprise & Backend">Java Enterprise &amp; Backend</option>
+                                <option value="MERN Stack & Modern Web">MERN Stack &amp; Modern Web</option>
+                                <option value="Databases & Cloud / DevOps">Databases &amp; Cloud / DevOps</option>
+                                <option value="AI & Engineering Foundations">AI &amp; Engineering Foundations</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="form-label">Skill Name *</label>
+                            <input type="text" id="sk_name" class="form-control" required placeholder="e.g. React.js / Spring Security">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="form-label">Level (%) *</label>
+                            <input type="number" id="sk_prof" class="form-control" value="90" min="10" max="100">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="form-label">Badge Label</label>
+                            <input type="text" id="sk_badge" class="form-control" placeholder="e.g. Advanced">
+                        </div>
+                        <button type="submit" class="btn-explore" style="padding:0.68rem 1.1rem;">+ Save Skill</button>
+                    </div>
+                </form>
+                <div class="edu-card">
+                    <table class="admin-table">
+                        <thead><tr><th>Category</th><th>Skill Name</th><th>Proficiency</th><th>Badge</th><th>Actions</th></tr></thead>
+                        <tbody id="skillsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 2: CERTIFICATES -->
+            <div id="tab-certificates" class="tab-panel">
+                <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:1.2rem;">Add / Edit / Remove Certifications</h2>
+                <form onsubmit="return saveCertItem(event)" class="edu-card" style="margin-bottom:2rem;">
+                    <input type="hidden" id="cert_id" value="0">
+                    <div class="form-grid" style="grid-template-columns:1.5fr 1fr 1fr;">
+                        <div class="form-group">
+                            <label class="form-label">Certificate Title *</label>
+                            <input type="text" id="cert_title" class="form-control" required placeholder="e.g. Programming In Java">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Issuing Organization *</label>
+                            <input type="text" id="cert_issuer" class="form-control" required placeholder="e.g. NPTEL & IIT Kharagpur">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Category *</label>
+                            <select id="cert_cat" class="form-control">
+                                <option value="Java & DSA (IIT NPTEL)">Java &amp; DSA (IIT NPTEL)</option>
+                                <option value="Web & Google Certs">Web &amp; Cloud Certs</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr;">
+                        <div class="form-group">
+                            <label class="form-label">Issue Date *</label>
+                            <input type="text" id="cert_date" class="form-control" required placeholder="e.g. Jan - Apr 2026">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Score / Recognition Badge *</label>
+                            <input type="text" id="cert_score" class="form-control" required placeholder="e.g. 75% (Elite)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Credential ID *</label>
+                            <input type="text" id="cert_cred" class="form-control" required placeholder="e.g. NPTEL26CS...">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea id="cert_desc" rows="2" class="form-control"></textarea>
+                    </div>
+                    <div class="form-grid" style="grid-template-columns:1.2fr 1fr;">
+                        <div class="form-group">
+                            <label class="form-label">Skill Tags (Comma-separated)</label>
+                            <input type="text" id="cert_skills" class="form-control" placeholder="Core Java, OOP, Multithreading">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Certificate Proof Path / URL</label>
+                            <input type="text" id="cert_proof" class="form-control" placeholder="uploads/my_cert.pdf or https://...">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-explore"><i class="fa-solid fa-floppy-disk"></i> Save Certificate</button>
+                </form>
+                <div class="edu-card">
+                    <table class="admin-table">
+                        <thead><tr><th>Title</th><th>Issuer</th><th>Score</th><th>Category</th><th>Actions</th></tr></thead>
+                        <tbody id="certsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 3: PROJECTS -->
+            <div id="tab-projects" class="tab-panel">
+                <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:1.2rem;">Add / Edit / Remove Flagship Projects</h2>
+                <form onsubmit="return saveProjItem(event)" class="edu-card" style="margin-bottom:2rem;">
+                    <input type="hidden" id="proj_id" value="0">
+                    <div class="form-grid" style="grid-template-columns:1.5fr 1fr 1fr;">
+                        <div class="form-group">
+                            <label class="form-label">Project Title *</label>
+                            <input type="text" id="proj_title" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Category *</label>
+                            <select id="proj_cat" class="form-control">
+                                <option value="Java Full Stack">Java Full Stack</option>
+                                <option value="MERN Stack">MERN Stack</option>
+                                <option value="AI & Microservices">AI &amp; Microservices</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Build Method *</label>
+                            <select id="proj_method" class="form-control">
+                                <option value="Solo Handcrafted">Solo Handcrafted</option>
+                                <option value="AI & Prompt Engineered">AI &amp; Prompt Engineered</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Short Summary *</label>
+                        <textarea id="proj_desc" rows="2" class="form-control" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Architecture Details</label>
+                        <textarea id="proj_arch" rows="2" class="form-control"></textarea>
+                    </div>
+                    <div class="form-grid" style="grid-template-columns:1.5fr 1fr;">
+                        <div class="form-group">
+                            <label class="form-label">Tech Stack (Comma-separated) *</label>
+                            <input type="text" id="proj_tech" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">GitHub Repository URL</label>
+                            <input type="text" id="proj_github" class="form-control">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-explore"><i class="fa-solid fa-floppy-disk"></i> Save Project</button>
+                </form>
+                <div class="edu-card">
+                    <table class="admin-table">
+                        <thead><tr><th>Title</th><th>Category</th><th>Tech Stack</th><th>Actions</th></tr></thead>
+                        <tbody id="projectsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 4: EDUCATION -->
+            <div id="tab-education" class="tab-panel">
+                <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:1.2rem;">Add / Edit / Remove Education</h2>
+                <form onsubmit="return saveEduItem(event)" class="edu-card" style="margin-bottom:2rem;">
+                    <input type="hidden" id="edu_id" value="0">
+                    <div class="form-grid" style="grid-template-columns:1.5fr 1fr;">
+                        <div class="form-group">
+                            <label class="form-label">Degree Title *</label>
+                            <input type="text" id="edu_degree" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Duration *</label>
+                            <input type="text" id="edu_dur" class="form-control" required placeholder="2024 - 2026">
+                        </div>
+                    </div>
+                    <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr;">
+                        <div class="form-group">
+                            <label class="form-label">College / Institution *</label>
+                            <input type="text" id="edu_inst" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">University *</label>
+                            <input type="text" id="edu_univ" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Percentage / CGPA *</label>
+                            <input type="text" id="edu_status" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea id="edu_desc" rows="2" class="form-control"></textarea>
+                    </div>
+                    <div class="form-grid" style="grid-template-columns:1fr 1fr;">
+                        <div class="form-group">
+                            <label class="form-label">Proof Label</label>
+                            <input type="text" id="edu_p1t" class="form-control" placeholder="Official Final Year Marksheet">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Proof File Path / URL</label>
+                            <input type="text" id="edu_p1u" class="form-control" placeholder="uploads/edu1_...pdf">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-explore"><i class="fa-solid fa-floppy-disk"></i> Save Education</button>
+                </form>
+                <div class="edu-card">
+                    <table class="admin-table">
+                        <thead><tr><th>Degree</th><th>Institution</th><th>Score</th><th>Actions</th></tr></thead>
+                        <tbody id="eduTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 5: EXPERIENCE -->
+            <div id="tab-experience" class="tab-panel">
+                <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:1.2rem;">Add / Edit / Remove Work Experience</h2>
+                <form onsubmit="return saveExpItem(event)" class="edu-card" style="margin-bottom:2rem;">
+                    <input type="hidden" id="exp_id" value="0">
+                    <div class="form-grid" style="grid-template-columns:1.2fr 1.2fr 1fr;">
+                        <div class="form-group">
+                            <label class="form-label">Role Title *</label>
+                            <input type="text" id="exp_role" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Company *</label>
+                            <input type="text" id="exp_company" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Duration *</label>
+                            <input type="text" id="exp_dur" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description *</label>
+                        <textarea id="exp_desc" rows="2" class="form-control" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Technologies Used (Comma-separated) *</label>
+                        <input type="text" id="exp_tech" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn-explore"><i class="fa-solid fa-floppy-disk"></i> Save Experience</button>
+                </form>
+                <div class="edu-card">
+                    <table class="admin-table">
+                        <thead><tr><th>Role</th><th>Company</th><th>Duration</th><th>Actions</th></tr></thead>
+                        <tbody id="expTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 6: GITHUB LIVE SYNC -->
+            <div id="tab-github" class="tab-panel">
+                <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:0.6rem;">Direct GitHub Live Sync Configuration</h2>
+                <p style="color:#94a3b8;font-size:0.88rem;margin-bottom:1.4rem;">
+                    To publish changes directly from the Live Website (`siddhiarote0420.github.io/Portfolio/admin.html`) to your GitHub repository without opening Eclipse, enter your GitHub Personal Access Token below once. (Or you can always update from your local Tomcat `/admin` panel, which auto-pushes via Git!)
+                </p>
+                <div class="edu-card">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">GitHub Repository (owner/repo)</label>
+                            <input type="text" id="gh_repo" class="form-control" value="SiddhiArote0420/Portfolio">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">GitHub Personal Access Token (repo permission)</label>
+                            <input type="password" id="gh_token" class="form-control" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="button" class="btn-explore" onclick="saveGitHubConfigAndPush()">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Save Token &amp; Push Changes to Live Site Now
+                        </button>
+                        <button type="button" class="btn-dark-cta" onclick="downloadUpdatedJson()">
+                            <i class="fa-solid fa-download"></i> Download portfolio-data.json
+                        </button>
+                        <button type="button" class="btn-sm-del" onclick="clearBrowserDraft()">
+                            Reset Local Browser Draft
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+    var liveData = {
+        profile: {},
+        projects: [],
+        educations: [],
+        certificates: [],
+        experiences: [],
+        skills: [],
+        counts: {}
+    };
+
+    function handleLiveAdminLogin(e) {
+        e.preventDefault();
+        var u = document.getElementById('loginUser').value.replace(/^\s+|\s+$/g, '');
+        var p = document.getElementById('loginPass').value;
+        if (u === 'admin' && p === 'admin123') {
+            sessionStorage.setItem('PORTFOLIO_ADMIN_AUTH', '1');
+            document.getElementById('adminLoginGate').style.display = 'none';
+            document.getElementById('adminAppWrap').style.display = 'block';
+            initAdminData();
+        } else {
+            document.getElementById('loginErrorBox').style.display = 'block';
+        }
+        return false;
+    }
+
+    function logoutLiveAdmin() {
+        sessionStorage.removeItem('PORTFOLIO_ADMIN_AUTH');
+        window.location.href = 'index.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        if (sessionStorage.getItem('PORTFOLIO_ADMIN_AUTH') === '1') {
+            document.getElementById('adminLoginGate').style.display = 'none';
+            document.getElementById('adminAppWrap').style.display = 'block';
+            initAdminData();
+        }
+        var savedToken = localStorage.getItem('GH_PAT_TOKEN');
+        if (savedToken) document.getElementById('gh_token').value = savedToken;
+    });
+
+    function switchTab(name, btn) {
+        var panels = document.querySelectorAll('.tab-panel');
+        for (var i = 0; i < panels.length; i++) panels[i].classList.remove('active');
+        var btns = document.querySelectorAll('.admin-tab-btn');
+        for (var j = 0; j < btns.length; j++) btns[j].classList.remove('active');
+        document.getElementById('tab-' + name).classList.add('active');
+        if (btn) btn.classList.add('active');
+    }
+
+    function showStatus(msg) {
+        var box = document.getElementById('statusAlert');
+        box.innerHTML = '<i class="fa-solid fa-circle-check"></i> ' + msg;
+        box.style.display = 'block';
+        setTimeout(function () { box.style.display = 'none'; }, 5000);
+    }
+
+    function initAdminData() {
+        fetch('data/portfolio-data.json?t=' + new Date().getTime(), { cache: 'no-store' })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                var localRaw = localStorage.getItem('PORTFOLIO_LIVE_OVERRIDE');
+                if (localRaw) {
+                    try {
+                        var parsed = JSON.parse(localRaw);
+                        if (parsed && parsed._updatedAt) data = parsed;
+                    } catch (e) {}
+                }
+                liveData = data;
+                renderAllAdminTables();
+            });
+    }
+
+    function persistDraftAndNotify(msg) {
+        liveData._updatedAt = new Date().getTime();
+        liveData.counts = {
+            projects: (liveData.projects || []).length,
+            skills: (liveData.skills || []).length,
+            certificates: (liveData.certificates || []).length,
+            education: (liveData.educations || []).length,
+            experience: (liveData.experiences || []).length
+        };
+        localStorage.setItem('PORTFOLIO_LIVE_OVERRIDE', JSON.stringify(liveData));
+        renderAllAdminTables();
+        showStatus(msg + ' (Click "Save & Publish to Live GitHub" in top bar to push to GitHub repository!)');
+    }
+
+    function renderAllAdminTables() {
+        document.getElementById('cnt_skills').textContent = (liveData.skills || []).length;
+        document.getElementById('cnt_certs').textContent = (liveData.certificates || []).length;
+        document.getElementById('cnt_projects').textContent = (liveData.projects || []).length;
+        document.getElementById('cnt_edu').textContent = (liveData.educations || []).length;
+        document.getElementById('cnt_exp').textContent = (liveData.experiences || []).length;
+
+        // Skills
+        var skHtml = '';
+        var sks = liveData.skills || [];
+        for (var i = 0; i < sks.length; i++) {
+            var s = sks[i];
+            skHtml += '<tr>' +
+                '<td>' + s.category + '</td>' +
+                '<td style="font-weight:700;color:#fff;">' + s.skillName + '</td>' +
+                '<td>' + s.proficiency + '%</td>' +
+                '<td>' + (s.badgeText || '') + '</td>' +
+                '<td>' +
+                    '<button type="button" class="btn-sm-edit" onclick="editSkillRow(' + i + ')">Edit</button> ' +
+                    '<button type="button" class="btn-sm-del" onclick="deleteSkillRow(' + i + ')">Delete</button>' +
+                '</td></tr>';
+        }
+        document.getElementById('skillsTableBody').innerHTML = skHtml;
+
+        // Certificates
+        var cHtml = '';
+        var certs = liveData.certificates || [];
+        for (var j = 0; j < certs.length; j++) {
+            var c = certs[j];
+            cHtml += '<tr>' +
+                '<td style="font-weight:700;color:#fff;">' + c.title + '</td>' +
+                '<td style="color:#00e5ff;">' + c.issuer + '</td>' +
+                '<td>' + c.scoreBadge + '</td>' +
+                '<td>' + c.category + '</td>' +
+                '<td>' +
+                    '<button type="button" class="btn-sm-edit" onclick="editCertRow(' + j + ')">Edit</button> ' +
+                    '<button type="button" class="btn-sm-del" onclick="deleteCertRow(' + j + ')">Delete</button>' +
+                '</td></tr>';
+        }
+        document.getElementById('certsTableBody').innerHTML = cHtml;
+
+        // Projects
+        var pHtml = '';
+        var projs = liveData.projects || [];
+        for (var k = 0; k < projs.length; k++) {
+            var p = projs[k];
+            var tStr = Array.isArray(p.techStack) ? p.techStack.join(', ') : (p.techStack || '');
+            pHtml += '<tr>' +
+                '<td style="font-weight:700;color:#fff;">' + p.title + '</td>' +
+                '<td>' + p.category + '</td>' +
+                '<td style="color:#94a3b8;">' + tStr + '</td>' +
+                '<td>' +
+                    '<button type="button" class="btn-sm-edit" onclick="editProjRow(' + k + ')">Edit</button> ' +
+                    '<button type="button" class="btn-sm-del" onclick="deleteProjRow(' + k + ')">Delete</button>' +
+                '</td></tr>';
+        }
+        document.getElementById('projectsTableBody').innerHTML = pHtml;
+
+        // Education
+        var eHtml = '';
+        var edus = liveData.educations || [];
+        for (var m = 0; m < edus.length; m++) {
+            var ed = edus[m];
+            eHtml += '<tr>' +
+                '<td style="font-weight:700;color:#fff;">' + ed.degree + '</td>' +
+                '<td>' + ed.institution + '</td>' +
+                '<td>' + ed.statusText + '</td>' +
+                '<td>' +
+                    '<button type="button" class="btn-sm-edit" onclick="editEduRow(' + m + ')">Edit</button> ' +
+                    '<button type="button" class="btn-sm-del" onclick="deleteEduRow(' + m + ')">Delete</button>' +
+                '</td></tr>';
+        }
+        document.getElementById('eduTableBody').innerHTML = eHtml;
+
+        // Experience
+        var xHtml = '';
+        var exps = liveData.experiences || [];
+        for (var n = 0; n < exps.length; n++) {
+            var ex = exps[n];
+            xHtml += '<tr>' +
+                '<td style="font-weight:700;color:#fff;">' + ex.roleTitle + '</td>' +
+                '<td>' + ex.company + '</td>' +
+                '<td>' + ex.duration + '</td>' +
+                '<td>' +
+                    '<button type="button" class="btn-sm-edit" onclick="editExpRow(' + n + ')">Edit</button> ' +
+                    '<button type="button" class="btn-sm-del" onclick="deleteExpRow(' + n + ')">Delete</button>' +
+                '</td></tr>';
+        }
+        document.getElementById('expTableBody').innerHTML = xHtml;
+    }
+
+    // CRUD: Skills
+    var editSkillIdx = -1;
+    function saveSkillItem(e) {
+        e.preventDefault();
+        var item = {
+            id: Date.now(),
+            category: document.getElementById('sk_cat').value,
+            skillName: document.getElementById('sk_name').value,
+            proficiency: Number(document.getElementById('sk_prof').value) || 90,
+            badgeText: document.getElementById('sk_badge').value
+        };
+        if (editSkillIdx >= 0) {
+            liveData.skills[editSkillIdx] = item;
+            editSkillIdx = -1;
+        } else {
+            liveData.skills.push(item);
+        }
+        document.getElementById('sk_name').value = '';
+        document.getElementById('sk_badge').value = '';
+        persistDraftAndNotify('Skill saved!');
+        return false;
+    }
+    function editSkillRow(idx) {
+        var s = liveData.skills[idx];
+        editSkillIdx = idx;
+        document.getElementById('sk_cat').value = s.category;
+        document.getElementById('sk_name').value = s.skillName;
+        document.getElementById('sk_prof').value = s.proficiency;
+        document.getElementById('sk_badge').value = s.badgeText || '';
+    }
+    function deleteSkillRow(idx) {
+        if (!confirm('Remove this skill?')) return;
+        liveData.skills.splice(idx, 1);
+        persistDraftAndNotify('Skill removed!');
+    }
+
+    // CRUD: Certificates
+    var editCertIdx = -1;
+    function saveCertItem(e) {
+        e.preventDefault();
+        var item = {
+            id: Date.now(),
+            title: document.getElementById('cert_title').value,
+            issuer: document.getElementById('cert_issuer').value,
+            issueDate: document.getElementById('cert_date').value,
+            scoreBadge: document.getElementById('cert_score').value,
+            category: document.getElementById('cert_cat').value,
+            eliteGold: false,
+            topRibbonText: 'ELITE CERTIFIED',
+            description: document.getElementById('cert_desc').value,
+            skillTags: document.getElementById('cert_skills').value,
+            credentialId: document.getElementById('cert_cred').value,
+            proofUrl: document.getElementById('cert_proof').value
+        };
+        if (editCertIdx >= 0) {
+            liveData.certificates[editCertIdx] = item;
+            editCertIdx = -1;
+        } else {
+            liveData.certificates.push(item);
+        }
+        document.getElementById('cert_title').value = '';
+        document.getElementById('cert_issuer').value = '';
+        document.getElementById('cert_date').value = '';
+        document.getElementById('cert_score').value = '';
+        document.getElementById('cert_desc').value = '';
+        document.getElementById('cert_skills').value = '';
+        document.getElementById('cert_cred').value = '';
+        document.getElementById('cert_proof').value = '';
+        persistDraftAndNotify('Certificate saved!');
+        return false;
+    }
+    function editCertRow(idx) {
+        var c = liveData.certificates[idx];
+        editCertIdx = idx;
+        document.getElementById('cert_title').value = c.title || '';
+        document.getElementById('cert_issuer').value = c.issuer || '';
+        document.getElementById('cert_date').value = c.issueDate || '';
+        document.getElementById('cert_score').value = c.scoreBadge || '';
+        document.getElementById('cert_cat').value = c.category || 'Java & DSA (IIT NPTEL)';
+        document.getElementById('cert_desc').value = c.description || '';
+        document.getElementById('cert_skills').value = c.skillTags || '';
+        document.getElementById('cert_cred').value = c.credentialId || '';
+        document.getElementById('cert_proof').value = c.proofUrl || '';
+    }
+    function deleteCertRow(idx) {
+        if (!confirm('Remove this certificate?')) return;
+        liveData.certificates.splice(idx, 1);
+        persistDraftAndNotify('Certificate removed!');
+    }
+
+    // CRUD: Projects
+    var editProjIdx = -1;
+    function saveProjItem(e) {
+        e.preventDefault();
+        var techs = document.getElementById('proj_tech').value.split(/\s*,\s*/);
+        var item = {
+            id: Date.now(),
+            title: document.getElementById('proj_title').value,
+            category: document.getElementById('proj_cat').value,
+            buildMethod: document.getElementById('proj_method').value,
+            featured: true,
+            description: document.getElementById('proj_desc').value,
+            architectureDetails: document.getElementById('proj_arch').value,
+            githubUrl: document.getElementById('proj_github').value,
+            liveUrl: '',
+            proofUrl: '',
+            techStack: techs
+        };
+        if (editProjIdx >= 0) {
+            liveData.projects[editProjIdx] = item;
+            editProjIdx = -1;
+        } else {
+            liveData.projects.push(item);
+        }
+        document.getElementById('proj_title').value = '';
+        document.getElementById('proj_desc').value = '';
+        document.getElementById('proj_arch').value = '';
+        document.getElementById('proj_tech').value = '';
+        document.getElementById('proj_github').value = '';
+        persistDraftAndNotify('Project saved!');
+        return false;
+    }
+    function editProjRow(idx) {
+        var p = liveData.projects[idx];
+        editProjIdx = idx;
+        document.getElementById('proj_title').value = p.title || '';
+        document.getElementById('proj_cat').value = p.category || 'Java Full Stack';
+        document.getElementById('proj_method').value = p.buildMethod || 'Solo Handcrafted';
+        document.getElementById('proj_desc').value = p.description || '';
+        document.getElementById('proj_arch').value = p.architectureDetails || '';
+        document.getElementById('proj_tech').value = Array.isArray(p.techStack) ? p.techStack.join(', ') : (p.techStack || '');
+        document.getElementById('proj_github').value = p.githubUrl || '';
+    }
+    function deleteProjRow(idx) {
+        if (!confirm('Remove this project?')) return;
+        liveData.projects.splice(idx, 1);
+        persistDraftAndNotify('Project removed!');
+    }
+
+    // CRUD: Education
+    var editEduIdx = -1;
+    function saveEduItem(e) {
+        e.preventDefault();
+        var item = {
+            id: Date.now(),
+            degree: document.getElementById('edu_degree').value,
+            institution: document.getElementById('edu_inst').value,
+            university: document.getElementById('edu_univ').value,
+            duration: document.getElementById('edu_dur').value,
+            statusText: document.getElementById('edu_status').value,
+            description: document.getElementById('edu_desc').value,
+            proof1Title: document.getElementById('edu_p1t').value,
+            proof1Url: document.getElementById('edu_p1u').value,
+            proof2Title: '',
+            proof2Url: '',
+            proof3Title: '',
+            proof3Url: ''
+        };
+        if (editEduIdx >= 0) {
+            liveData.educations[editEduIdx] = item;
+            editEduIdx = -1;
+        } else {
+            liveData.educations.push(item);
+        }
+        persistDraftAndNotify('Education saved!');
+        return false;
+    }
+    function editEduRow(idx) {
+        var ed = liveData.educations[idx];
+        editEduIdx = idx;
+        document.getElementById('edu_degree').value = ed.degree || '';
+        document.getElementById('edu_inst').value = ed.institution || '';
+        document.getElementById('edu_univ').value = ed.university || '';
+        document.getElementById('edu_dur').value = ed.duration || '';
+        document.getElementById('edu_status').value = ed.statusText || '';
+        document.getElementById('edu_desc').value = ed.description || '';
+        document.getElementById('edu_p1t').value = ed.proof1Title || '';
+        document.getElementById('edu_p1u').value = ed.proof1Url || '';
+    }
+    function deleteEduRow(idx) {
+        if (!confirm('Remove this education entry?')) return;
+        liveData.educations.splice(idx, 1);
+        persistDraftAndNotify('Education removed!');
+    }
+
+    // CRUD: Experience
+    var editExpIdx = -1;
+    function saveExpItem(e) {
+        e.preventDefault();
+        var item = {
+            id: Date.now(),
+            roleTitle: document.getElementById('exp_role').value,
+            company: document.getElementById('exp_company').value,
+            expType: 'Internship',
+            trackName: 'Software Engineering',
+            duration: document.getElementById('exp_dur').value,
+            location: 'Pune',
+            description: document.getElementById('exp_desc').value,
+            techStack: document.getElementById('exp_tech').value,
+            proof1Title: '',
+            proof1Url: '',
+            proof2Title: '',
+            proof2Url: '',
+            proof3Title: '',
+            proof3Url: ''
+        };
+        if (editExpIdx >= 0) {
+            liveData.experiences[editExpIdx] = item;
+            editExpIdx = -1;
+        } else {
+            liveData.experiences.push(item);
+        }
+        persistDraftAndNotify('Experience saved!');
+        return false;
+    }
+    function editExpRow(idx) {
+        var ex = liveData.experiences[idx];
+        editExpIdx = idx;
+        document.getElementById('exp_role').value = ex.roleTitle || '';
+        document.getElementById('exp_company').value = ex.company || '';
+        document.getElementById('exp_dur').value = ex.duration || '';
+        document.getElementById('exp_desc').value = ex.description || '';
+        document.getElementById('exp_tech').value = ex.techStack || '';
+    }
+    function deleteExpRow(idx) {
+        if (!confirm('Remove this experience entry?')) return;
+        liveData.experiences.splice(idx, 1);
+        persistDraftAndNotify('Experience removed!');
+    }
+
+    function saveGitHubConfigAndPush() {
+        var token = document.getElementById('gh_token').value.replace(/^\s+|\s+$/g, '');
+        if (token) localStorage.setItem('GH_PAT_TOKEN', token);
+        publishToGitHubNow();
+    }
+
+    function publishToGitHubNow() {
+        var token = (document.getElementById('gh_token').value || localStorage.getItem('GH_PAT_TOKEN') || '').replace(/^\s+|\s+$/g, '');
+        var repo = (document.getElementById('gh_repo').value || 'SiddhiArote0420/Portfolio').replace(/^\s+|\s+$/g, '');
+        if (!token) {
+            switchTab('github');
+            alert('To publish directly from the browser to GitHub Pages, enter your GitHub Personal Access Token once (or use your local Eclipse Tomcat Admin Panel which auto-pushes via Git!).');
+            return;
+        }
+        var apiUrl = 'https://api.github.com/repos/' + repo + '/contents/data/portfolio-data.json';
+        var jsonStr = JSON.stringify(liveData, null, 2);
+        var base64Content = btoa(unescape(encodeURIComponent(jsonStr)));
+
+        fetch(apiUrl, {
+            headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (fileInfo) {
+            return fetch(apiUrl, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/vnd.github+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: 'Update portfolio data from Live Admin CMS',
+                    content: base64Content,
+                    sha: fileInfo.sha
+                })
+            });
+        })
+        .then(function (res) {
+            if (res.ok) {
+                showStatus('Published directly to GitHub repository! Live site will refresh in ~30 seconds.');
+            } else {
+                alert('GitHub API push failed. Please check your Personal Access Token.');
+            }
+        });
+    }
+
+    function downloadUpdatedJson() {
+        var blob = new Blob([JSON.stringify(liveData, null, 2)], { type: 'application/json' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'portfolio-data.json';
+        a.click();
+    }
+
+    function clearBrowserDraft() {
+        localStorage.removeItem('PORTFOLIO_LIVE_OVERRIDE');
+        location.reload();
+    }
+</script>
+</body>
+</html>

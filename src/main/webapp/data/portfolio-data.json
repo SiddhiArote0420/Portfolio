@@ -18,9 +18,9 @@
     "profilePicUrl": "uploads/profile_1792514562348_pic.jpeg",
     "resumeUrl": "uploads/resume_1792514562377_JAVA_DEVELOPER__2_.pdf",
     "goldProofUrl": "",
-    "githubUrl": "https://github.com/SiddhiArote0420",
-    "linkedinUrl": "https://linkedin.com/in/siddhi-arote-3b6bb731a",
-    "leetcodeUrl": "https://leetcode.com/u/Arote_Siddhi",
+    "githubUrl": "github.com/SiddhiArote0420",
+    "linkedinUrl": "linkedin.com/in/siddhi-arote-3b6bb731a",
+    "leetcodeUrl": "leetcode.com/u/Arote_Siddhi",
     "email": "siddhiarote5@gmail.com",
     "phone": "+91 9822076804"
   },
@@ -50,72 +50,6 @@
       "liveUrl": "",
       "proofUrl": "",
       "techStack": ["Core Java", "Servlets", "JDBC", "MySQL", "HTML5", "CSS3", "Bootstrap", "JavaScript", "Apache Tomcat"]
-    }
-  ],
-  "educations": [
-    {
-      "id": 5,
-      "degree": "Master of Computer Science (MCS)",
-      "institution": "Modern College of Arts, Science & Commerce, Ganeshkhind, Pune",
-      "university": "Savitribai Phule Pune University (SPPU)",
-      "duration": "2024 - 2026",
-      "statusText": "78.50%",
-      "description": "Specialization in Advanced Computer Science, Object-Oriented Software Engineering, Database Systems, Web Technologies, and Software Architecture",
-      "proof1Title": "",
-      "proof1Url": "uploads/edu1_1792518720519_finalYear.pdf",
-      "proof2Title": "",
-      "proof2Url": "",
-      "proof3Title": "",
-      "proof3Url": ""
-    }
-  ],
-  "certificates": [
-    {
-      "id": 6,
-      "title": "Programming in Java - Elite Certification",
-      "issuer": "NPTEL & IIT Kharagpur (Swayam)",
-      "issueDate": "Jan - Apr 2026",
-      "scoreBadge": "75% (Elite)",
-      "category": "Java & DSA (IIT NPTEL)",
-      "eliteGold": false,
-      "topRibbonText": "ELITE + GOLD MEDALIST",
-      "description": "Successfully completed a rigorous 12-week proctored certification course in Programming in Java with Elite standing, achieving a consolidated score of 75%",
-      "skillTags": "Core Java, OOP, Multithreading, Collections Framework, Exception Handling, Java Streams, Servlets, JDBC, Java Swing",
-      "credentialId": "NPTEL26CS36S1251802290",
-      "proofUrl": "uploads/cert_1792518285256_NPTEL26CS36S125180229004916999.pdf"
-    },
-    {
-      "id": 7,
-      "title": "Fundamentals of Object Oriented Programming",
-      "issuer": "NPTEL & IIT Roorkee",
-      "issueDate": "Jan-Apr 2026",
-      "scoreBadge": "65%",
-      "category": "Java & DSA (IIT NPTEL)",
-      "eliteGold": false,
-      "topRibbonText": "ELITE CERTIFIED",
-      "description": "Successfully completed a 12-week proctored certification course in Fundamentals of Object Oriented Programming conducted by IIT Roorkee with an Elite badge and a consolidated score of 65%",
-      "skillTags": "Object-Oriented Programming (OOP), Classes & Objects, Inheritance, Polymorphism, Encapsulation, Abstraction, Problem Solving",
-      "credentialId": "NPTEL26CS87S1551801791",
-      "proofUrl": "uploads/cert_1792518502325_NPTL_Certificate.pdf"
-    }
-  ],
-  "experiences": [
-    {
-      "id": 4,
-      "roleTitle": "Java Full Stack Developer Intern",
-      "company": "Creazione Software, Pune",
-      "expType": "Internship",
-      "trackName": "Full Stack Java Engineering",
-      "duration": "Apr 2026 – Oct 2026",
-      "location": "Pune",
-      "description": "Developed and maintained robust Java backend components using Spring Boot, Spring JDBC, and RESTful APIs under senior developer guidance.    Wrote and optimized complex SQL queries and managed MySQL databases for efficient CRUD operations and data handling.    Conducted API testing using Postman, debugged application errors, and fixed critical backend bugs to improve system stability.    Managed source code and collaborated effectively with the engineering team using Git & GitHub, following standardized SDLC practices",
-      "techStack": "Java, Spring Boot, Spring JDBC, REST APIs, MySQL, SQL, Postman, Git, GitHub, SDLC",
-      "proof1Title": "",
-      "proof1Url": "",
-      "proof2Title": "",
-      "proof2Url": "",
-      "proof3Title": "",
-      "proof3Url": ""
     }
   ],
   "skills": [
@@ -194,7 +128,7 @@
     "projects": 2,
     "skills": 10,
     "certificates": 2,
-    "education": 1,
+    "education": 2,
     "experience": 1
   }
 }

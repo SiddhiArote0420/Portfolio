@@ -1,6 +1,7 @@
 /**
  * portfolio.js
- * Dynamically loads & filters Portfolio data using JavaScript + JSON (Fetch API).
+ * Dynamically loads & filters Portfolio data (Profile, Projects, Education, Certificates, Experience, Skills)
+ * using JavaScript + JSON (Fetch API).
  * Written in 100% ES5-compatible syntax so Eclipse JSDT Validator reports zero errors/warnings.
  */
 
@@ -16,13 +17,14 @@ var portfolioJsonData = {
 var activeProjectCategory = 'ALL';
 var activeProjectMethod = 'ALL';
 var activeSkillCategory = 'ALL';
+var activeCertCategory = 'ALL';
 
 document.addEventListener('DOMContentLoaded', function () {
     loadPortfolioJsonData();
 });
 
 function normalizeExternalUrl(url, fallback) {
-    if (!url || ! String(url).replace(/^\s+|\s+$/g, '')) {
+    if (!url || !String(url).replace(/^\s+|\s+$/g, '')) {
         return fallback || '#';
     }
     var trimmed = String(url).replace(/^\s+|\s+$/g, '');
@@ -39,10 +41,61 @@ function normalizeExternalUrl(url, fallback) {
     return 'https://' + trimmed;
 }
 
+function resolveAssetUrl(relPath) {
+    if (!relPath) return '';
+    var p = String(relPath).replace(/^\s+|\s+$/g, '');
+    if (!p) return '';
+    if (p.indexOf('http://') === 0 || p.indexOf('https://') === 0 || p.indexOf('data:') === 0) {
+        return p;
+    }
+    var base = window.PORTFOLIO_CTX || '';
+    if (base && p.indexOf('/') !== 0) {
+        return base + '/' + p;
+    }
+    return p;
+}
+
+function applyPortfolioDataObject(data) {
+    if (!data) return;
+    if (data.profile) {
+        portfolioJsonData.profile = data.profile;
+        if (window.IS_STATIC_PORTFOLIO) {
+            renderProfileFromJson(portfolioJsonData.profile, data);
+        }
+    }
+    if (Array.isArray(data.projects)) {
+        portfolioJsonData.projects = data.projects;
+        renderProjectsFromJson(portfolioJsonData.projects);
+    }
+    if (Array.isArray(data.skills)) {
+        portfolioJsonData.skills = data.skills;
+        renderSkillsFromJson(portfolioJsonData.skills);
+    }
+    if (Array.isArray(data.educations)) {
+        portfolioJsonData.educations = data.educations;
+        if (window.IS_STATIC_PORTFOLIO) {
+            renderEducationFromJson(portfolioJsonData.educations);
+        }
+    }
+    if (Array.isArray(data.certificates)) {
+        portfolioJsonData.certificates = data.certificates;
+        if (window.IS_STATIC_PORTFOLIO) {
+            renderCertificatesFromJson(portfolioJsonData.certificates);
+        }
+    }
+    if (Array.isArray(data.experiences)) {
+        portfolioJsonData.experiences = data.experiences;
+        if (window.IS_STATIC_PORTFOLIO) {
+            renderExperienceFromJson(portfolioJsonData.experiences);
+        }
+    }
+}
+
 function loadPortfolioJsonData() {
     var base = window.PORTFOLIO_CTX || '';
-    var apiUrl = (base ? base + '/api/portfolio-data' : 'data/portfolio-data.json');
-    var fallbackJsonUrl = (base ? base + '/data/portfolio-data.json' : 'data/portfolio-data.json');
+    var bust = '?t=' + new Date().getTime();
+    var apiUrl = (base ? base + '/api/portfolio-data' : 'data/portfolio-data.json') + bust;
+    var fallbackJsonUrl = (base ? base + '/data/portfolio-data.json' : 'data/portfolio-data.json') + bust;
 
     fetch(apiUrl, { cache: 'no-store' })
         .then(function (response) {
@@ -61,36 +114,19 @@ function loadPortfolioJsonData() {
             return response.json();
         })
         .then(function (data) {
-            if (!data) return;
-            if (data.profile) {
-                portfolioJsonData.profile = data.profile;
+            // Check if user saved newer draft in browser localStorage on static live site
+            if (window.IS_STATIC_PORTFOLIO) {
+                try {
+                    var localRaw = localStorage.getItem('PORTFOLIO_LIVE_OVERRIDE');
+                    if (localRaw) {
+                        var localData = JSON.parse(localRaw);
+                        if (localData && localData._updatedAt) {
+                            data = localData;
+                        }
+                    }
+                } catch (e) {}
             }
-            if (Array.isArray(data.projects)) {
-                portfolioJsonData.projects = data.projects;
-                renderProjectsFromJson(portfolioJsonData.projects);
-            }
-            if (Array.isArray(data.skills)) {
-                portfolioJsonData.skills = data.skills;
-                renderSkillsFromJson(portfolioJsonData.skills);
-            }
-            if (Array.isArray(data.educations) && data.educations.length > 0) {
-                portfolioJsonData.educations = data.educations;
-                if (window.IS_STATIC_PORTFOLIO) {
-                    renderEducationFromJson(portfolioJsonData.educations);
-                }
-            }
-            if (Array.isArray(data.certificates) && data.certificates.length > 0) {
-                portfolioJsonData.certificates = data.certificates;
-                if (window.IS_STATIC_PORTFOLIO) {
-                    renderCertificatesFromJson(portfolioJsonData.certificates);
-                }
-            }
-            if (Array.isArray(data.experiences) && data.experiences.length > 0) {
-                portfolioJsonData.experiences = data.experiences;
-                if (window.IS_STATIC_PORTFOLIO) {
-                    renderExperienceFromJson(portfolioJsonData.experiences);
-                }
-            }
+            applyPortfolioDataObject(data);
         })
         .catch(function (err) {
             console.log('Using server-rendered portfolio cards.', err);
@@ -99,9 +135,6 @@ function loadPortfolioJsonData() {
 
 /**
  * Returns adaptive Bootstrap column classes based on total visible cards
- * - 1 card  -> col-lg-8 col-md-10 mx-auto (centered, wide)
- * - 2 cards -> col-lg-6 col-md-6 (fills full row 50% + 50% evenly)
- * - 3+ cards -> col-lg-4 col-md-6 (3-column grid, centered row)
  */
 function getAdaptiveThreeColClass(count) {
     if (count === 1) return 'col-lg-8 col-md-10 mx-auto';
@@ -115,13 +148,78 @@ function getAdaptiveTwoColClass(count) {
 }
 
 /**
+ * Dynamically updates Profile Hero, Resume & Contact details on Static Live Site
+ */
+function renderProfileFromJson(pf, fullData) {
+    if (!pf) return;
+    document.title = (pf.fullName || 'Siddhi Arote') + ' \u2014 ' + (pf.roleTitle || 'Full-Stack Developer');
+
+    var setText = function (id, val) {
+        var el = document.getElementById(id);
+        if (el && val !== undefined && val !== null) el.textContent = val;
+    };
+    setText('navLogoInitials', pf.logoInitials || 'SA');
+    setText('navShortName', pf.shortName || pf.fullName);
+    setText('navSubtitle', pf.navSubtitle || 'Full-Stack Developer');
+    setText('heroStatusText', pf.statusText);
+    setText('heroLocation', pf.location);
+    setText('heroGreeting', pf.greetingText);
+    setText('heroFullName', pf.fullName);
+    setText('heroBio', pf.bio);
+    setText('photoCaptionName', pf.shortName || pf.fullName);
+    setText('topBadgeTitle', pf.topCardBadgeTitle);
+    setText('topBadgeSub', pf.topCardBadgeSub);
+    setText('bottomBadgeTitle', pf.bottomCardBadgeTitle);
+    setText('bottomBadgeSub', pf.bottomCardBadgeSub);
+    setText('resumeHeadingName', (pf.fullName || 'Siddhi Arote') + ' \u2014 Official Resume');
+    setText('resumeSubRole', pf.roleTitle);
+    setText('contactEmailText', pf.email);
+    setText('contactPhoneText', pf.phone);
+    setText('contactLocationText', pf.location);
+    setText('footerFullName', pf.fullName);
+    setText('footerNavSub', pf.navSubtitle);
+
+    var picEl = document.getElementById('heroProfileImg');
+    if (picEl && pf.profilePicUrl) {
+        picEl.src = resolveAssetUrl(pf.profilePicUrl);
+    }
+
+    var resIframe = document.getElementById('resumePreviewIframe');
+    var resViewBtn = document.getElementById('resumeFullscreenBtn');
+    var resDlBtn = document.getElementById('resumeDownloadBtn');
+    if (pf.resumeUrl) {
+        var rUrl = resolveAssetUrl(pf.resumeUrl);
+        if (resIframe) resIframe.src = rUrl;
+        if (resViewBtn) resViewBtn.href = rUrl;
+        if (resDlBtn) resDlBtn.href = rUrl;
+    }
+
+    var ghLinks = document.querySelectorAll('.dyn-github-link');
+    for (var i = 0; i < ghLinks.length; i++) {
+        ghLinks[i].href = normalizeExternalUrl(pf.githubUrl, 'https://github.com/SiddhiArote0420');
+    }
+    var liLinks = document.querySelectorAll('.dyn-linkedin-link');
+    for (var j = 0; j < liLinks.length; j++) {
+        liLinks[j].href = normalizeExternalUrl(pf.linkedinUrl, 'https://linkedin.com/');
+    }
+    var lcLinks = document.querySelectorAll('.dyn-leetcode-link');
+    for (var k = 0; k < lcLinks.length; k++) {
+        lcLinks[k].href = normalizeExternalUrl(pf.leetcodeUrl, 'https://leetcode.com/');
+    }
+    var emLinks = document.querySelectorAll('.dyn-email-link');
+    for (var m = 0; m < emLinks.length; m++) {
+        emLinks[m].href = 'mailto:' + (pf.email || 'siddhiarote5@gmail.com');
+    }
+}
+
+/**
  * Renders Projects dynamically from JSON into Bootstrap 5 Dark Cards (#projectsGrid)
  */
 function renderProjectsFromJson(projectsList) {
     var grid = document.getElementById('projectsGrid');
     if (!grid) return;
 
-    var ctx = window.PORTFOLIO_CTX || '';
+    var adminHref = window.IS_STATIC_PORTFOLIO ? 'admin.html?tab=projects' : ((window.PORTFOLIO_CTX || '') + '/admin?tab=projects');
     if (!projectsList || projectsList.length === 0) {
         grid.innerHTML =
             '<div class="col-lg-8 col-md-10 mx-auto">' +
@@ -129,7 +227,7 @@ function renderProjectsFromJson(projectsList) {
                     '<div class="mb-3" style="font-size:2.2rem;color:#00e5ff;"><i class="fa-solid fa-folder-plus"></i></div>' +
                     '<h4 class="text-white fw-bold mb-2">No Projects Added Yet</h4>' +
                     '<p class="text-secondary mb-3">Open the Admin CMS Portal to add your own flagship projects, tech stacks, GitHub links, and architecture details.</p>' +
-                    '<div><a href="' + ctx + '/admin?tab=projects" class="btn-explore">+ Add Projects in Admin Panel</a></div>' +
+                    '<div><a href="' + adminHref + '" class="btn-explore">+ Add Projects in Admin Panel</a></div>' +
                 '</div>' +
             '</div>';
         return;
@@ -240,6 +338,271 @@ function renderProjectsFromJson(projectsList) {
 }
 
 /**
+ * Renders Education cards dynamically from JSON (#educationGrid)
+ */
+function renderEducationFromJson(eduList) {
+    var grid = document.getElementById('educationGrid');
+    if (!grid) return;
+
+    var adminHref = window.IS_STATIC_PORTFOLIO ? 'admin.html?tab=education' : ((window.PORTFOLIO_CTX || '') + '/admin?tab=education');
+    if (!eduList || eduList.length === 0) {
+        grid.innerHTML =
+            '<div class="col-lg-8 col-md-10 mx-auto">' +
+                '<div class="card edu-card text-center p-5 border-secondary">' +
+                    '<div class="mb-3" style="font-size:2.2rem;color:#10b981;"><i class="fa-solid fa-graduation-cap"></i></div>' +
+                    '<h4 class="text-white fw-bold mb-2">Add Your Academic Background &amp; Marksheet Proofs</h4>' +
+                    '<div><a href="' + adminHref + '" class="btn-explore">+ Add Education in Admin Panel</a></div>' +
+                '</div>' +
+            '</div>';
+        return;
+    }
+
+    var colClass = getAdaptiveTwoColClass(eduList.length);
+    var htmlParts = [];
+
+    for (var i = 0; i < eduList.length; i++) {
+        var ed = eduList[i];
+        var p1Label = (ed.proof1Title && String(ed.proof1Title).replace(/^\s+|\s+$/g, '')) ? ed.proof1Title : (ed.proof1Url ? 'Official Marksheet / Proof' : '');
+        var p2Label = (ed.proof2Title && String(ed.proof2Title).replace(/^\s+|\s+$/g, '')) ? ed.proof2Title : (ed.proof2Url ? 'Academic Certificate / Proof 2' : '');
+        var p3Label = (ed.proof3Title && String(ed.proof3Title).replace(/^\s+|\s+$/g, '')) ? ed.proof3Title : (ed.proof3Url ? 'Verified Record / Proof 3' : '');
+
+        var pillsHtml = '';
+        var subText = (ed.degree || '') + ' \u2014 ' + (ed.statusText || '');
+        if (p1Label) {
+            pillsHtml +=
+                '<button type="button" class="proof-pill-btn"' +
+                    ' data-ptitle="' + escapeAttr(p1Label) + '"' +
+                    ' data-purl="' + escapeAttr(ed.proof1Url || '') + '"' +
+                    ' data-psub="' + escapeAttr(subText) + '"' +
+                    ' onclick="openProofModal(this.getAttribute(\'data-ptitle\'), this.getAttribute(\'data-purl\'), this.getAttribute(\'data-psub\'))">' +
+                    '<i class="fa-regular fa-file-lines doc-ic"></i><span>' + escapeHtml(p1Label) + '</span><i class="fa-regular fa-eye eye-ic"></i>' +
+                '</button>';
+        }
+        if (p2Label) {
+            pillsHtml +=
+                '<button type="button" class="proof-pill-btn"' +
+                    ' data-ptitle="' + escapeAttr(p2Label) + '"' +
+                    ' data-purl="' + escapeAttr(ed.proof2Url || '') + '"' +
+                    ' data-psub="' + escapeAttr(subText) + '"' +
+                    ' onclick="openProofModal(this.getAttribute(\'data-ptitle\'), this.getAttribute(\'data-purl\'), this.getAttribute(\'data-psub\'))">' +
+                    '<i class="fa-regular fa-file-lines doc-ic"></i><span>' + escapeHtml(p2Label) + '</span><i class="fa-regular fa-eye eye-ic"></i>' +
+                '</button>';
+        }
+        if (p3Label) {
+            pillsHtml +=
+                '<button type="button" class="proof-pill-btn"' +
+                    ' data-ptitle="' + escapeAttr(p3Label) + '"' +
+                    ' data-purl="' + escapeAttr(ed.proof3Url || '') + '"' +
+                    ' data-psub="' + escapeAttr(subText) + '"' +
+                    ' onclick="openProofModal(this.getAttribute(\'data-ptitle\'), this.getAttribute(\'data-purl\'), this.getAttribute(\'data-psub\'))">' +
+                    '<i class="fa-regular fa-file-lines doc-ic"></i><span>' + escapeHtml(p3Label) + '</span><i class="fa-regular fa-eye eye-ic"></i>' +
+                '</button>';
+        }
+
+        htmlParts.push(
+            '<div class="' + colClass + ' d-flex align-items-stretch">' +
+                '<div class="card edu-card w-100 border-secondary">' +
+                    '<div>' +
+                        '<div class="edu-top-row">' +
+                            '<div class="edu-icon-box"><i class="fa-solid fa-graduation-cap"></i></div>' +
+                            '<div class="edu-meta-right">' +
+                                '<span class="edu-duration-pill">' + escapeHtml(ed.duration) + '</span>' +
+                                '<span class="edu-status-text">' + escapeHtml(ed.statusText) + '</span>' +
+                            '</div>' +
+                        '</div>' +
+                        '<h3 class="edu-degree">' + escapeHtml(ed.degree) + '</h3>' +
+                        '<div class="edu-inst">' + escapeHtml(ed.institution) + '</div>' +
+                        '<div class="edu-univ">' + escapeHtml(ed.university) + '</div>' +
+                        '<p class="edu-desc">' + escapeHtml(ed.description) + '</p>' +
+                    '</div>' +
+                    '<div class="proof-section">' +
+                        '<div class="proof-heading"><i class="fa-regular fa-circle-check"></i> INSPECT VERIFIED PROOFS &amp; MARKSHEETS:</div>' +
+                        '<div class="proof-pills">' + pillsHtml + '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>'
+        );
+    }
+
+    grid.innerHTML = htmlParts.join('');
+}
+
+/**
+ * Renders Certificates dynamically from JSON (#certsGrid)
+ */
+function renderCertificatesFromJson(certList) {
+    var grid = document.getElementById('certsGrid');
+    if (!grid) return;
+
+    var adminHref = window.IS_STATIC_PORTFOLIO ? 'admin.html?tab=certificates' : ((window.PORTFOLIO_CTX || '') + '/admin?tab=certificates');
+    if (!certList || certList.length === 0) {
+        grid.innerHTML =
+            '<div class="col-lg-8 col-md-10 mx-auto">' +
+                '<div class="card cert-card text-center p-5 border-secondary">' +
+                    '<div class="mb-3" style="font-size:2.2rem;color:#fbbf24;"><i class="fa-solid fa-award"></i></div>' +
+                    '<h4 class="text-white fw-bold mb-2">Add Your Certifications &amp; Honors</h4>' +
+                    '<div><a href="' + adminHref + '" class="btn-explore">+ Add Certificates in Admin Panel</a></div>' +
+                '</div>' +
+            '</div>';
+        return;
+    }
+
+    var filtered = [];
+    for (var i = 0; i < certList.length; i++) {
+        var c = certList[i];
+        var cat = c.category || '';
+        if (activeCertCategory === 'ALL' || cat.toLowerCase() === activeCertCategory.toLowerCase()) {
+            filtered.push(c);
+        }
+    }
+
+    var colClass = getAdaptiveThreeColClass(filtered.length);
+    var htmlParts = [];
+
+    for (var j = 0; j < filtered.length; j++) {
+        var cert = filtered[j];
+        var tags = cert.skillTags ? String(cert.skillTags).split(/\s*,\s*/) : [];
+        var tagsHtml = '';
+        for (var k = 0; k < tags.length; k++) {
+            if (tags[k]) tagsHtml += '<span class="tech-tag">' + escapeHtml(tags[k]) + '</span>';
+        }
+        var ribbonHtml = cert.eliteGold
+            ? '<div class="elite-top-ribbon">\u2728 ' + escapeHtml(cert.topRibbonText || 'ELITE + GOLD MEDALIST') + '</div>'
+            : '';
+        var cardClass = cert.eliteGold ? 'elite-gold' : 'border-secondary';
+        var subInfo = 'Issued by ' + (cert.issuer || '') + ' \u2022 Score: ' + (cert.scoreBadge || '') + ' \u2022 Credential ID: ' + (cert.credentialId || '');
+
+        htmlParts.push(
+            '<div class="' + colClass + ' d-flex align-items-stretch cert-col-item" data-category="' + escapeAttr(cert.category || '') + '">' +
+                '<div class="card cert-card w-100 ' + cardClass + '">' +
+                    ribbonHtml +
+                    '<div>' +
+                        '<div class="cert-top-row">' +
+                            '<div class="cert-icon-box"><i class="fa-solid fa-medal"></i></div>' +
+                            '<span class="cert-date">' + escapeHtml(cert.issueDate) + '</span>' +
+                        '</div>' +
+                        '<h3 class="cert-title">' + escapeHtml(cert.title) + '</h3>' +
+                        '<div class="cert-issuer">' + escapeHtml(cert.issuer) + '</div>' +
+                        '<div class="cert-score-pill">Score / Recognition: ' + escapeHtml(cert.scoreBadge) + '</div>' +
+                        '<p class="cert-desc">' + escapeHtml(cert.description) + '</p>' +
+                        '<div class="tech-tags">' + tagsHtml + '</div>' +
+                    '</div>' +
+                    '<div class="cert-footer">' +
+                        '<span class="cert-id" title="ID: ' + escapeAttr(cert.credentialId) + '">ID: ' + escapeHtml(cert.credentialId) + '</span>' +
+                        '<button type="button" class="btn-view-cert"' +
+                            ' data-ptitle="' + escapeAttr(cert.title) + '"' +
+                            ' data-purl="' + escapeAttr(cert.proofUrl || '') + '"' +
+                            ' data-psub="' + escapeAttr(subInfo) + '"' +
+                            ' onclick="openProofModal(this.getAttribute(\'data-ptitle\'), this.getAttribute(\'data-purl\'), this.getAttribute(\'data-psub\'))">' +
+                            '<i class="fa-regular fa-eye"></i> View Proof' +
+                        '</button>' +
+                    '</div>' +
+                '</div>' +
+            '</div>'
+        );
+    }
+
+    grid.innerHTML = htmlParts.join('');
+}
+
+/**
+ * Renders Experience cards dynamically from JSON (#experienceList)
+ */
+function renderExperienceFromJson(expList) {
+    var listEl = document.getElementById('experienceList');
+    if (!listEl) return;
+
+    var adminHref = window.IS_STATIC_PORTFOLIO ? 'admin.html?tab=experience' : ((window.PORTFOLIO_CTX || '') + '/admin?tab=experience');
+    if (!expList || expList.length === 0) {
+        listEl.innerHTML =
+            '<div class="card exp-card text-center p-5 border-secondary">' +
+                '<div class="mb-3" style="font-size:2.2rem;color:#38bdf8;"><i class="fa-solid fa-briefcase"></i></div>' +
+                '<h4 class="text-white fw-bold mb-2">Add Your Work Experience &amp; Internships</h4>' +
+                '<div><a href="' + adminHref + '" class="btn-explore">+ Add Experience in Admin Panel</a></div>' +
+            '</div>';
+        return;
+    }
+
+    var htmlParts = [];
+    for (var i = 0; i < expList.length; i++) {
+        var ex = expList[i];
+        var techs = ex.techStack ? String(ex.techStack).split(/\s*,\s*/) : [];
+        var techHtml = '';
+        for (var k = 0; k < techs.length; k++) {
+            if (techs[k]) techHtml += '<span class="tech-tag">' + escapeHtml(techs[k]) + '</span>';
+        }
+
+        var p1Label = (ex.proof1Title && String(ex.proof1Title).replace(/^\s+|\s+$/g, '')) ? ex.proof1Title : (ex.proof1Url ? 'Experience Certificate / Proof' : '');
+        var p2Label = (ex.proof2Title && String(ex.proof2Title).replace(/^\s+|\s+$/g, '')) ? ex.proof2Title : (ex.proof2Url ? 'Offer Letter / Proof 2' : '');
+        var p3Label = (ex.proof3Title && String(ex.proof3Title).replace(/^\s+|\s+$/g, '')) ? ex.proof3Title : (ex.proof3Url ? 'Training Certificate / Proof 3' : '');
+
+        var pillsHtml = '';
+        var subInfo = (ex.roleTitle || '') + ' (' + (ex.duration || '') + ')';
+        if (p1Label) {
+            pillsHtml +=
+                '<button type="button" class="proof-pill-btn"' +
+                    ' data-ptitle="' + escapeAttr(p1Label + ' \u2014 ' + (ex.company || '')) + '"' +
+                    ' data-purl="' + escapeAttr(ex.proof1Url || '') + '"' +
+                    ' data-psub="' + escapeAttr(subInfo) + '"' +
+                    ' onclick="openProofModal(this.getAttribute(\'data-ptitle\'), this.getAttribute(\'data-purl\'), this.getAttribute(\'data-psub\'))">' +
+                    '<i class="fa-regular fa-file-lines doc-ic"></i><span>' + escapeHtml(p1Label) + '</span><i class="fa-regular fa-eye eye-ic"></i>' +
+                '</button>';
+        }
+        if (p2Label) {
+            pillsHtml +=
+                '<button type="button" class="proof-pill-btn"' +
+                    ' data-ptitle="' + escapeAttr(p2Label + ' \u2014 ' + (ex.company || '')) + '"' +
+                    ' data-purl="' + escapeAttr(ex.proof2Url || '') + '"' +
+                    ' data-psub="' + escapeAttr(subInfo) + '"' +
+                    ' onclick="openProofModal(this.getAttribute(\'data-ptitle\'), this.getAttribute(\'data-purl\'), this.getAttribute(\'data-psub\'))">' +
+                    '<i class="fa-regular fa-file-lines doc-ic"></i><span>' + escapeHtml(p2Label) + '</span><i class="fa-regular fa-eye eye-ic"></i>' +
+                '</button>';
+        }
+        if (p3Label) {
+            pillsHtml +=
+                '<button type="button" class="proof-pill-btn"' +
+                    ' data-ptitle="' + escapeAttr(p3Label + ' \u2014 ' + (ex.company || '')) + '"' +
+                    ' data-purl="' + escapeAttr(ex.proof3Url || '') + '"' +
+                    ' data-psub="' + escapeAttr(subInfo) + '"' +
+                    ' onclick="openProofModal(this.getAttribute(\'data-ptitle\'), this.getAttribute(\'data-purl\'), this.getAttribute(\'data-psub\'))">' +
+                    '<i class="fa-regular fa-file-lines doc-ic"></i><span>' + escapeHtml(p3Label) + '</span><i class="fa-regular fa-eye eye-ic"></i>' +
+                '</button>';
+        }
+
+        var proofBarHtml = pillsHtml
+            ? '<div class="exp-proof-bar">' +
+                  '<div class="proof-heading" style="margin-bottom:0;"><i class="fa-regular fa-circle-check"></i> ATTACHED PROOFS:</div>' +
+                  '<div class="proof-pills">' + pillsHtml + '</div>' +
+              '</div>'
+            : '';
+
+        htmlParts.push(
+            '<div class="card exp-card border-secondary">' +
+                '<div class="exp-top-row">' +
+                    '<div>' +
+                        '<div class="exp-badges">' +
+                            '<span class="badge-intern">' + escapeHtml(ex.expType || 'Internship') + '</span>' +
+                            '<span class="exp-track">\u2022 ' + escapeHtml(ex.trackName || '') + '</span>' +
+                        '</div>' +
+                        '<h3 class="exp-role">' + escapeHtml(ex.roleTitle) + '</h3>' +
+                        '<div class="exp-company"><i class="fa-regular fa-building"></i> ' + escapeHtml(ex.company) + '</div>' +
+                    '</div>' +
+                    '<div class="exp-meta-right">' +
+                        '<div><i class="fa-regular fa-calendar" style="color:#22d3ee;"></i> ' + escapeHtml(ex.duration) + '</div>' +
+                        '<div class="loc"><i class="fa-solid fa-location-dot" style="color:#f43f5e;"></i> ' + escapeHtml(ex.location) + '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<p class="exp-desc">' + escapeHtml(ex.description) + '</p>' +
+                '<div class="tech-tags">' + techHtml + '</div>' +
+                proofBarHtml +
+            '</div>'
+        );
+    }
+
+    listEl.innerHTML = htmlParts.join('');
+}
+
+/**
  * Helper to match a skill against a filter tab ('ALL', 'Java', 'MERN', 'AI')
  */
 function matchesSkillFilter(sk, catFilter) {
@@ -316,7 +679,7 @@ function renderSkillsFromJson(skillsList) {
     var grid = document.getElementById('skillsGrid');
     if (!grid) return;
 
-    var ctx = window.PORTFOLIO_CTX || '';
+    var adminHref = window.IS_STATIC_PORTFOLIO ? 'admin.html?tab=skills' : ((window.PORTFOLIO_CTX || '') + '/admin?tab=skills');
     if (!skillsList || skillsList.length === 0) {
         grid.innerHTML =
             '<div class="col-lg-8 col-md-10 mx-auto">' +
@@ -324,7 +687,7 @@ function renderSkillsFromJson(skillsList) {
                     '<div class="mb-3" style="font-size:2.2rem;color:#f59e0b;"><i class="fa-solid fa-microchip"></i></div>' +
                     '<h4 class="text-white fw-bold mb-2">No Technical Skills Added Yet</h4>' +
                     '<p class="text-secondary mb-3">Open the Admin CMS Portal to add your own technical skills, categories, badges, and proficiency bars.</p>' +
-                    '<div><a href="' + ctx + '/admin?tab=skills" class="btn-explore">+ Add Skills in Admin Panel</a></div>' +
+                    '<div><a href="' + adminHref + '" class="btn-explore">+ Add Skills in Admin Panel</a></div>' +
                 '</div>' +
             '</div>';
         return;

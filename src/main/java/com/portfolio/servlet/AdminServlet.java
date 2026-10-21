@@ -80,6 +80,11 @@ public class AdminServlet extends HttpServlet {
             dao.deleteMessage(id);
             resp.sendRedirect(req.getContextPath() + "/admin?tab=messages&status=deleted");
             return;
+        } else if ("publishLive".equalsIgnoreCase(action)) {
+            PortfolioApiServlet.syncStaticJsonFile(PortfolioApiServlet.buildPortfolioJson(dao));
+            PortfolioApiServlet.pushToGitHubLiveSync();
+            resp.sendRedirect(req.getContextPath() + "/admin?tab=overview&status=published_to_live_github");
+            return;
         }
 
         req.setAttribute("profile", dao.getProfile());

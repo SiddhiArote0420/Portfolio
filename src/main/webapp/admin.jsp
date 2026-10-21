@@ -144,6 +144,9 @@
         </div>
 
         <div class="nav-actions">
+            <a href="<%= request.getContextPath() %>/admin?action=publishLive" class="btn-explore" style="padding:0.48rem 1rem;font-size:0.8rem;">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Publish to Live GitHub
+            </a>
             <a href="<%= request.getContextPath() %>/index.jsp" target="_blank" class="btn-resume-nav">
                 <i class="fa-solid fa-up-right-from-square"></i> View Live Portfolio
             </a>

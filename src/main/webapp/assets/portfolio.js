@@ -878,23 +878,55 @@ function submitPortfolioContactForm(event) {
 
     setContactStatusMessage(statusEl, 'sending', 'Sending message...');
 
-    var endpointUrl = resolveContactEndpointUrl(form);
-    var formBody =
-        'recruiterName=' + encodeURIComponent(nameVal) +
-        '&recruiterEmail=' + encodeURIComponent(emailVal) +
-        '&roleOffered=' + encodeURIComponent(subjectVal) +
-        '&subject=' + encodeURIComponent(subjectVal) +
-        '&message=' + encodeURIComponent(messageVal);
+    var useStaticDirectEmail = Boolean(
+        window.IS_STATIC_PORTFOLIO &&
+        !(window.PORTFOLIO_API_BASE_URL && String(window.PORTFOLIO_API_BASE_URL).replace(/^\s+|\s+$/g, ''))
+    );
 
-    fetch(endpointUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Accept': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: formBody
-    })
+    var requestPromise;
+    if (useStaticDirectEmail) {
+        var receiverEmail = (portfolioJsonData && portfolioJsonData.profile && portfolioJsonData.profile.email)
+            ? String(portfolioJsonData.profile.email).replace(/^\s+|\s+$/g, '')
+            : 'siddhiarote5@gmail.com';
+        var formSubmitUrl = 'https://formsubmit.co/ajax/' + encodeURIComponent(receiverEmail);
+        requestPromise = fetch(formSubmitUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                name: nameVal,
+                email: emailVal,
+                _replyto: emailVal,
+                subject: subjectVal,
+                _subject: '[Portfolio Contact] ' + subjectVal + ' - from ' + nameVal,
+                message: messageVal,
+                _template: 'table',
+                _captcha: 'false'
+            })
+        });
+    } else {
+        var endpointUrl = resolveContactEndpointUrl(form);
+        var formBody =
+            'recruiterName=' + encodeURIComponent(nameVal) +
+            '&recruiterEmail=' + encodeURIComponent(emailVal) +
+            '&roleOffered=' + encodeURIComponent(subjectVal) +
+            '&subject=' + encodeURIComponent(subjectVal) +
+            '&message=' + encodeURIComponent(messageVal);
+
+        requestPromise = fetch(endpointUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formBody
+        });
+    }
+
+    requestPromise
         .then(function (response) {
             return response.json()
                 .then(function (data) {
@@ -905,7 +937,12 @@ function submitPortfolioContactForm(event) {
                 });
         })
         .then(function (result) {
-            if (result.ok && result.data && result.data.success === true) {
+            var isConfirmedSuccess = Boolean(
+                result.ok &&
+                result.data &&
+                (result.data.success === true || result.data.success === 'true')
+            );
+            if (isConfirmedSuccess) {
                 setContactStatusMessage(
                     statusEl,
                     'success',

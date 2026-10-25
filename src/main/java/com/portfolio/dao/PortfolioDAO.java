@@ -11,17 +11,33 @@ public class PortfolioDAO {
 
     // ================= ADMIN AUTH =================
     public boolean validateAdmin(String username, String password) {
-        String sql = "SELECT id FROM admin_users WHERE username = ? AND password = ?";
+        if (username == null || username.trim().isEmpty() || password == null || password.isEmpty()) {
+            return false;
+        }
+        String sql = "SELECT id, username, password FROM admin_users WHERE id = 1 AND username = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, username);
-            ps.setString(2, password);
+            ps.setString(1, username.trim());
             try (ResultSet rs = ps.executeQuery()) {
-                return rs.next();
+                if (rs.next()) {
+                    String dbUser = rs.getString("username");
+                    String dbPass = rs.getString("password");
+                    if (dbUser == null || dbPass == null) {
+                        return false;
+                    }
+                    boolean userMatch = java.security.MessageDigest.isEqual(
+                            dbUser.getBytes(java.nio.charset.StandardCharsets.UTF_8),
+                            username.trim().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                    boolean passMatch = java.security.MessageDigest.isEqual(
+                            dbPass.getBytes(java.nio.charset.StandardCharsets.UTF_8),
+                            password.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                    return userMatch && passMatch;
+                }
+                return false;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return "admin".equals(username) && "admin123".equals(password);
+            return false;
         }
     }
 

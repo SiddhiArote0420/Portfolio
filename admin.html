@@ -40,23 +40,23 @@
             </p>
         </div>
         <div id="loginErrorBox" style="display:none;background:rgba(244,63,94,0.15);border:1px solid #f43f5e;color:#fda4af;padding:0.7rem 1rem;border-radius:10px;font-size:0.8rem;margin-bottom:1.1rem;text-align:center;">
-            Invalid credentials! Default: <strong>admin / admin123</strong>
+            Invalid administrator credentials. Access denied.
         </div>
-        <form onsubmit="return handleLiveAdminLogin(event)">
+        <form onsubmit="return handleLiveAdminLogin(event)" autocomplete="off">
             <div class="form-group">
                 <label class="form-label">Admin Username</label>
-                <input type="text" id="loginUser" class="form-control" value="admin" required>
+                <input type="text" id="loginUser" class="form-control" placeholder="Enter administrator username" autocomplete="username" required>
             </div>
             <div class="form-group" style="margin-bottom:1.4rem;">
                 <label class="form-label">Admin Password</label>
-                <input type="password" id="loginPass" class="form-control" value="admin123" required>
+                <input type="password" id="loginPass" class="form-control" placeholder="Enter administrator password" autocomplete="current-password" required>
             </div>
-            <button type="submit" class="btn-explore" style="width:100%;justify-content:center;">
+            <button type="submit" id="adminLoginBtn" class="btn-explore" style="width:100%;justify-content:center;">
                 <i class="fa-solid fa-lock-open"></i> Sign In to Live Admin
             </button>
         </form>
         <div style="margin-top:1.4rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;font-size:0.78rem;color:#64748b;">
-            <span>Default: <strong style="color:#cbd5e1;">admin / admin123</strong></span>
+            <span><i class="fa-solid fa-shield-halved"></i> Authorized Administrator Only</span>
             <a href="index.html" style="color:#00e5ff;font-weight:600;">← Back to Live Portfolio</a>
         </div>
     </div>
@@ -403,15 +403,94 @@
         e.preventDefault();
         var u = document.getElementById('loginUser').value.replace(/^\s+|\s+$/g, '');
         var p = document.getElementById('loginPass').value;
-        if (u === 'admin' && p === 'admin123') {
-            sessionStorage.setItem('PORTFOLIO_ADMIN_AUTH', '1');
-            document.getElementById('adminLoginGate').style.display = 'none';
-            document.getElementById('adminAppWrap').style.display = 'block';
-            initAdminData();
-        } else {
-            document.getElementById('loginErrorBox').style.display = 'block';
+        var errBox = document.getElementById('loginErrorBox');
+        var btn = document.getElementById('adminLoginBtn');
+        errBox.style.display = 'none';
+        if (!u || !p) {
+            errBox.style.display = 'block';
+            return false;
         }
+        if (btn) btn.disabled = true;
+
+        var apiBase = window.PORTFOLIO_API_BASE_URL || '';
+        var loginUrl = (apiBase ? apiBase.replace(/\/+$/, '') + '/' : '') + 'admin';
+        var formBody = 'action=login&username=' + encodeURIComponent(u) + '&password=' + encodeURIComponent(p);
+
+        fetch(loginUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            credentials: 'same-origin',
+            body: formBody
+        })
+        .then(function (res) {
+            if (res.ok) {
+                return res.json().then(function (data) {
+                    if (data && data.success && data.role === 'ROLE_ADMIN') {
+                        sessionStorage.setItem('PORTFOLIO_ADMIN_AUTH', '1');
+                        if (data.csrfToken) sessionStorage.setItem('PORTFOLIO_CSRF_TOKEN', data.csrfToken);
+                        document.getElementById('adminLoginGate').style.display = 'none';
+                        document.getElementById('adminAppWrap').style.display = 'block';
+                        initAdminData();
+                        return;
+                    }
+                    throw new Error('Unauthorized');
+                });
+            }
+            if (res.status === 401 || res.status === 403 || res.status === 429) {
+                throw new Error('InvalidCredentials');
+            }
+            // If running on static GitHub Pages without Java servlet backend, verify repository owner write access via GitHub API
+            return verifyGitHubOwnerAccess(p);
+        })
+        .catch(function (err) {
+            if (err && err.message === 'InvalidCredentials') {
+                errBox.style.display = 'block';
+                if (btn) btn.disabled = false;
+                return;
+            }
+            verifyGitHubOwnerAccess(p).finally(function () {
+                if (btn) btn.disabled = false;
+            });
+        })
+        .finally(function () {
+            if (btn) btn.disabled = false;
+        });
         return false;
+    }
+
+    function verifyGitHubOwnerAccess(tokenCandidate) {
+        if (!tokenCandidate || tokenCandidate.length < 20) {
+            document.getElementById('loginErrorBox').style.display = 'block';
+            return Promise.resolve();
+        }
+        return fetch('https://api.github.com/repos/SiddhiArote0420/Portfolio', {
+            headers: {
+                'Authorization': 'Bearer ' + tokenCandidate.replace(/^\s+|\s+$/g, ''),
+                'Accept': 'application/vnd.github+json'
+            }
+        })
+        .then(function (r) {
+            if (!r.ok) throw new Error('Denied');
+            return r.json();
+        })
+        .then(function (repoInfo) {
+            if (repoInfo && repoInfo.permissions && repoInfo.permissions.push === true) {
+                localStorage.setItem('GH_PAT_TOKEN', tokenCandidate.replace(/^\s+|\s+$/g, ''));
+                sessionStorage.setItem('PORTFOLIO_ADMIN_AUTH', '1');
+                document.getElementById('adminLoginGate').style.display = 'none';
+                document.getElementById('adminAppWrap').style.display = 'block';
+                initAdminData();
+            } else {
+                document.getElementById('loginErrorBox').style.display = 'block';
+            }
+        })
+        .catch(function () {
+            document.getElementById('loginErrorBox').style.display = 'block';
+        });
     }
 
     function logoutLiveAdmin() {

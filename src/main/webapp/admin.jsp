@@ -1,9 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.*, com.portfolio.dao.PortfolioDAO, com.portfolio.model.*" %>
 <%
-    if (session.getAttribute("adminUser") == null) {
+    response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+    response.setHeader("Pragma", "no-cache");
+    response.setDateHeader("Expires", 0);
+
+    if (session.getAttribute("adminUser") == null || !"ROLE_ADMIN".equals(session.getAttribute("adminRole"))) {
         response.sendRedirect(request.getContextPath() + "/admin-login.jsp");
         return;
+    }
+
+    String csrfToken = (String) session.getAttribute("csrfToken");
+    if (csrfToken == null) {
+        csrfToken = UUID.randomUUID().toString();
+        session.setAttribute("csrfToken", csrfToken);
     }
 
     PortfolioDAO dao = new PortfolioDAO();
@@ -144,7 +154,7 @@
         </div>
 
         <div class="nav-actions">
-            <a href="<%= request.getContextPath() %>/admin?action=publishLive" class="btn-explore" style="padding:0.48rem 1rem;font-size:0.8rem;">
+            <a href="<%= request.getContextPath() %>/admin?action=publishLive&amp;csrfToken=<%= csrfToken %>" class="btn-explore" style="padding:0.48rem 1rem;font-size:0.8rem;">
                 <i class="fa-solid fa-cloud-arrow-up"></i> Publish to Live GitHub
             </a>
             <a href="<%= request.getContextPath() %>/index.jsp" target="_blank" class="btn-resume-nav">
@@ -256,6 +266,7 @@
 
             <form action="<%= request.getContextPath() %>/admin" method="post" enctype="multipart/form-data" class="edu-card" style="margin-bottom:2rem;">
                 <input type="hidden" name="action" value="updateProfile">
+                <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
 
                 <h3 style="font-size:1rem;font-weight:800;color:#00e5ff;margin-bottom:1rem;">1. Upload Profile Picture, Resume PDF &amp; Gold Medal Proof</h3>
                 <div class="form-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:1.2rem;">
@@ -394,6 +405,7 @@
 
             <form action="<%= request.getContextPath() %>/admin" method="post" enctype="multipart/form-data" class="edu-card" style="margin-bottom:2rem;" id="projectForm">
                 <input type="hidden" name="action" value="saveProject">
+                <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
                 <input type="hidden" name="id" id="proj_id" value="0">
 
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
@@ -497,7 +509,7 @@
                                         data-order="<%= pr.getDisplayOrder() %>"
                                         data-feat="<%= pr.isFeatured() %>"
                                         onclick="editProject(this)">Edit</button>
-                                <a href="<%= request.getContextPath() %>/admin?action=deleteProject&id=<%= pr.getId() %>"
+                                <a href="<%= request.getContextPath() %>/admin?action=deleteProject&amp;id=<%= pr.getId() %>&amp;csrfToken=<%= csrfToken %>"
                                    class="btn-sm-del" onclick="return confirm('Delete this project?')">Delete</a>
                             </td>
                         </tr>
@@ -513,6 +525,7 @@
 
             <form action="<%= request.getContextPath() %>/admin" method="post" enctype="multipart/form-data" class="edu-card" style="margin-bottom:2rem;">
                 <input type="hidden" name="action" value="saveEducation">
+                <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
                 <input type="hidden" name="id" id="edu_id" value="0">
 
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
@@ -620,7 +633,7 @@
                                         data-p3u="<%= ed.getProof3Url() != null ? ed.getProof3Url() : "" %>"
                                         data-order="<%= ed.getDisplayOrder() %>"
                                         onclick="editEducation(this)">Edit</button>
-                                <a href="<%= request.getContextPath() %>/admin?action=deleteEducation&id=<%= ed.getId() %>"
+                                <a href="<%= request.getContextPath() %>/admin?action=deleteEducation&amp;id=<%= ed.getId() %>&amp;csrfToken=<%= csrfToken %>"
                                    class="btn-sm-del" onclick="return confirm('Delete this education entry?')">Delete</a>
                             </td>
                         </tr>
@@ -636,6 +649,7 @@
 
             <form action="<%= request.getContextPath() %>/admin" method="post" enctype="multipart/form-data" class="edu-card" style="margin-bottom:2rem;">
                 <input type="hidden" name="action" value="saveCertificate">
+                <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
                 <input type="hidden" name="id" id="cert_id" value="0">
 
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
@@ -748,7 +762,7 @@
                                         data-proof="<%= c.getProofUrl() != null ? c.getProofUrl() : "" %>"
                                         data-order="<%= c.getDisplayOrder() %>"
                                         onclick="editCertificate(this)">Edit</button>
-                                <a href="<%= request.getContextPath() %>/admin?action=deleteCertificate&id=<%= c.getId() %>"
+                                <a href="<%= request.getContextPath() %>/admin?action=deleteCertificate&amp;id=<%= c.getId() %>&amp;csrfToken=<%= csrfToken %>"
                                    class="btn-sm-del" onclick="return confirm('Delete this certificate?')">Delete</a>
                             </td>
                         </tr>
@@ -764,6 +778,7 @@
 
             <form action="<%= request.getContextPath() %>/admin" method="post" enctype="multipart/form-data" class="edu-card" style="margin-bottom:2rem;">
                 <input type="hidden" name="action" value="saveExperience">
+                <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
                 <input type="hidden" name="id" id="exp_id" value="0">
 
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
@@ -882,7 +897,7 @@
                                         data-p3u="<%= ex.getProof3Url() != null ? ex.getProof3Url() : "" %>"
                                         data-order="<%= ex.getDisplayOrder() %>"
                                         onclick="editExperience(this)">Edit</button>
-                                <a href="<%= request.getContextPath() %>/admin?action=deleteExperience&id=<%= ex.getId() %>"
+                                <a href="<%= request.getContextPath() %>/admin?action=deleteExperience&amp;id=<%= ex.getId() %>&amp;csrfToken=<%= csrfToken %>"
                                    class="btn-sm-del" onclick="return confirm('Delete this experience entry?')">Delete</a>
                             </td>
                         </tr>
@@ -898,6 +913,7 @@
 
             <form action="<%= request.getContextPath() %>/admin" method="post" class="edu-card" style="margin-bottom:2rem;">
                 <input type="hidden" name="action" value="saveSkill">
+                <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
                 <input type="hidden" name="id" id="sk_id" value="0">
 
                 <div class="form-grid" style="grid-template-columns:1.2fr 1.2fr 110px 140px 90px auto;align-items:end;">
@@ -951,7 +967,7 @@
                             <td>
                                 <button type="button" class="btn-sm-edit"
                                         onclick="document.getElementById('sk_id').value='<%= sk.getId() %>';document.getElementById('sk_cat').value='<%= sk.getCategory() %>';document.getElementById('sk_name').value='<%= sk.getSkillName().replace("'", "\\'") %>';document.getElementById('sk_prof').value='<%= sk.getProficiency() %>';document.getElementById('sk_badge').value='<%= sk.getBadgeText() %>';document.getElementById('sk_order').value='<%= sk.getDisplayOrder() %>';">Edit</button>
-                                <a href="<%= request.getContextPath() %>/admin?action=deleteSkill&id=<%= sk.getId() %>" class="btn-sm-del">Delete</a>
+                                <a href="<%= request.getContextPath() %>/admin?action=deleteSkill&amp;id=<%= sk.getId() %>&amp;csrfToken=<%= csrfToken %>" class="btn-sm-del">Delete</a>
                             </td>
                         </tr>
                         <% } %>
@@ -995,9 +1011,9 @@
                             <td style="max-width:280px;color:#cbd5e1;"><%= m.getMessage() %></td>
                             <td style="white-space:nowrap;">
                                 <% if (!m.isRead()) { %>
-                                <a href="<%= request.getContextPath() %>/admin?action=markRead&id=<%= m.getId() %>" class="btn-sm-edit">Mark Read</a>
+                                <a href="<%= request.getContextPath() %>/admin?action=markRead&amp;id=<%= m.getId() %>&amp;csrfToken=<%= csrfToken %>" class="btn-sm-edit">Mark Read</a>
                                 <% } %>
-                                <a href="<%= request.getContextPath() %>/admin?action=deleteMessage&id=<%= m.getId() %>" class="btn-sm-del" onclick="return confirm('Delete message?')">Delete</a>
+                                <a href="<%= request.getContextPath() %>/admin?action=deleteMessage&amp;id=<%= m.getId() %>&amp;csrfToken=<%= csrfToken %>" class="btn-sm-del" onclick="return confirm('Delete message?')">Delete</a>
                             </td>
                         </tr>
                         <% } %>

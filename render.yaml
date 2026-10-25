@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: siddhi-arote-portfolio
+    runtime: docker
+    plan: free
+    envVars:
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: CONTACT_RECEIVER_EMAIL
+        value: siddhiarote5@gmail.com
+      - key: SMTP_USERNAME
+        value: siddhiarote5@gmail.com
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false

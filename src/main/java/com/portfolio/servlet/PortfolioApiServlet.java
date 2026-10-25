@@ -26,7 +26,6 @@ public class PortfolioApiServlet extends HttpServlet {
         resp.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
 
         String jsonString = buildPortfolioJson(dao);
-        syncStaticJsonFile(jsonString);
 
         try (PrintWriter out = resp.getWriter()) {
             out.print(jsonString);

@@ -219,15 +219,13 @@ function renderProjectsFromJson(projectsList) {
     var grid = document.getElementById('projectsGrid');
     if (!grid) return;
 
-    var adminHref = window.IS_STATIC_PORTFOLIO ? 'admin.html?tab=projects' : ((window.PORTFOLIO_CTX || '') + '/admin?tab=projects');
     if (!projectsList || projectsList.length === 0) {
         grid.innerHTML =
             '<div class="col-lg-8 col-md-10 mx-auto">' +
                 '<div class="card project-card text-center p-5 border-secondary">' +
                     '<div class="mb-3" style="font-size:2.2rem;color:#00e5ff;"><i class="fa-solid fa-folder-plus"></i></div>' +
-                    '<h4 class="text-white fw-bold mb-2">No Projects Added Yet</h4>' +
-                    '<p class="text-secondary mb-3">Open the Admin CMS Portal to add your own flagship projects, tech stacks, GitHub links, and architecture details.</p>' +
-                    '<div><a href="' + adminHref + '" class="btn-explore">+ Add Projects in Admin Panel</a></div>' +
+                    '<h4 class="text-white fw-bold mb-2">Projects Coming Soon</h4>' +
+                    '<p class="text-secondary mb-0">Flagship engineering projects and architecture deep-dives will be listed here.</p>' +
                 '</div>' +
             '</div>';
         return;
@@ -344,14 +342,13 @@ function renderEducationFromJson(eduList) {
     var grid = document.getElementById('educationGrid');
     if (!grid) return;
 
-    var adminHref = window.IS_STATIC_PORTFOLIO ? 'admin.html?tab=education' : ((window.PORTFOLIO_CTX || '') + '/admin?tab=education');
     if (!eduList || eduList.length === 0) {
         grid.innerHTML =
             '<div class="col-lg-8 col-md-10 mx-auto">' +
                 '<div class="card edu-card text-center p-5 border-secondary">' +
                     '<div class="mb-3" style="font-size:2.2rem;color:#10b981;"><i class="fa-solid fa-graduation-cap"></i></div>' +
-                    '<h4 class="text-white fw-bold mb-2">Add Your Academic Background &amp; Marksheet Proofs</h4>' +
-                    '<div><a href="' + adminHref + '" class="btn-explore">+ Add Education in Admin Panel</a></div>' +
+                    '<h4 class="text-white fw-bold mb-2">Academic Credentials</h4>' +
+                    '<p class="text-secondary mb-0">Academic background and verified marksheet proofs will appear here.</p>' +
                 '</div>' +
             '</div>';
         return;
@@ -434,14 +431,13 @@ function renderCertificatesFromJson(certList) {
     var grid = document.getElementById('certsGrid');
     if (!grid) return;
 
-    var adminHref = window.IS_STATIC_PORTFOLIO ? 'admin.html?tab=certificates' : ((window.PORTFOLIO_CTX || '') + '/admin?tab=certificates');
     if (!certList || certList.length === 0) {
         grid.innerHTML =
             '<div class="col-lg-8 col-md-10 mx-auto">' +
                 '<div class="card cert-card text-center p-5 border-secondary">' +
                     '<div class="mb-3" style="font-size:2.2rem;color:#fbbf24;"><i class="fa-solid fa-award"></i></div>' +
-                    '<h4 class="text-white fw-bold mb-2">Add Your Certifications &amp; Honors</h4>' +
-                    '<div><a href="' + adminHref + '" class="btn-explore">+ Add Certificates in Admin Panel</a></div>' +
+                    '<h4 class="text-white fw-bold mb-2">Certifications &amp; Honors</h4>' +
+                    '<p class="text-secondary mb-0">Professional certifications and honors will appear here.</p>' +
                 '</div>' +
             '</div>';
         return;
@@ -512,13 +508,12 @@ function renderExperienceFromJson(expList) {
     var listEl = document.getElementById('experienceList');
     if (!listEl) return;
 
-    var adminHref = window.IS_STATIC_PORTFOLIO ? 'admin.html?tab=experience' : ((window.PORTFOLIO_CTX || '') + '/admin?tab=experience');
     if (!expList || expList.length === 0) {
         listEl.innerHTML =
             '<div class="card exp-card text-center p-5 border-secondary">' +
                 '<div class="mb-3" style="font-size:2.2rem;color:#38bdf8;"><i class="fa-solid fa-briefcase"></i></div>' +
-                '<h4 class="text-white fw-bold mb-2">Add Your Work Experience &amp; Internships</h4>' +
-                '<div><a href="' + adminHref + '" class="btn-explore">+ Add Experience in Admin Panel</a></div>' +
+                '<h4 class="text-white fw-bold mb-2">Work Experience &amp; Internships</h4>' +
+                '<p class="text-secondary mb-0">Professional software development roles and internships will appear here.</p>' +
             '</div>';
         return;
     }
@@ -679,15 +674,13 @@ function renderSkillsFromJson(skillsList) {
     var grid = document.getElementById('skillsGrid');
     if (!grid) return;
 
-    var adminHref = window.IS_STATIC_PORTFOLIO ? 'admin.html?tab=skills' : ((window.PORTFOLIO_CTX || '') + '/admin?tab=skills');
     if (!skillsList || skillsList.length === 0) {
         grid.innerHTML =
             '<div class="col-lg-8 col-md-10 mx-auto">' +
                 '<div class="card skill-cat-card text-center p-5 border-secondary">' +
                     '<div class="mb-3" style="font-size:2.2rem;color:#f59e0b;"><i class="fa-solid fa-microchip"></i></div>' +
-                    '<h4 class="text-white fw-bold mb-2">No Technical Skills Added Yet</h4>' +
-                    '<p class="text-secondary mb-3">Open the Admin CMS Portal to add your own technical skills, categories, badges, and proficiency bars.</p>' +
-                    '<div><a href="' + adminHref + '" class="btn-explore">+ Add Skills in Admin Panel</a></div>' +
+                    '<h4 class="text-white fw-bold mb-2">Technical Skills</h4>' +
+                    '<p class="text-secondary mb-0">Categorized technical competencies and proficiency levels will appear here.</p>' +
                 '</div>' +
             '</div>';
         return;
@@ -796,4 +789,158 @@ function escapeAttr(str) {
         .replace(/'/g, '&#39;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
+}
+
+/**
+ * Contact Form Submission Handler (Task 3 & Task 4)
+ * Validates fields on the frontend, prevents duplicate submissions, disables button while sending,
+ * displays accessible status messages below the button, and clears form only on confirmed backend success.
+ */
+var isSubmittingContactForm = false;
+
+function resolveContactEndpointUrl(form) {
+    if (window.PORTFOLIO_API_BASE_URL && String(window.PORTFOLIO_API_BASE_URL).replace(/^\s+|\s+$/g, '')) {
+        var base = String(window.PORTFOLIO_API_BASE_URL).replace(/\/+$/, '');
+        return base + '/contact';
+    }
+    var ctx = (typeof window.PORTFOLIO_CTX === 'string') ? window.PORTFOLIO_CTX : '';
+    if (ctx) {
+        return ctx.replace(/\/+$/, '') + '/contact';
+    }
+    if (form && form.getAttribute('action')) {
+        return form.getAttribute('action');
+    }
+    return 'contact';
+}
+
+function setContactStatusMessage(statusEl, state, text) {
+    if (!statusEl) return;
+    statusEl.style.display = 'block';
+    statusEl.textContent = text;
+    statusEl.setAttribute('data-status', state);
+
+    if (state === 'sending') {
+        statusEl.style.background = 'rgba(56, 189, 248, 0.12)';
+        statusEl.style.border = '1px solid rgba(56, 189, 248, 0.35)';
+        statusEl.style.color = '#38bdf8';
+    } else if (state === 'success') {
+        statusEl.style.background = 'rgba(16, 185, 129, 0.14)';
+        statusEl.style.border = '1px solid rgba(16, 185, 129, 0.4)';
+        statusEl.style.color = '#34d399';
+    } else {
+        statusEl.style.background = 'rgba(244, 63, 94, 0.14)';
+        statusEl.style.border = '1px solid rgba(244, 63, 94, 0.4)';
+        statusEl.style.color = '#fb7185';
+    }
+}
+
+function submitPortfolioContactForm(event) {
+    if (event) {
+        event.preventDefault();
+    }
+    if (isSubmittingContactForm) {
+        return false;
+    }
+
+    var form = document.getElementById('contactForm') || (event && event.target);
+    var nameInput = document.getElementById('contactName');
+    var emailInput = document.getElementById('contactEmail');
+    var subjectInput = document.getElementById('contactSubject');
+    var messageInput = document.getElementById('contactMessage');
+    var submitBtn = document.getElementById('contactSubmitBtn');
+    var statusEl = document.getElementById('contactFormStatus');
+
+    var nameVal = nameInput ? String(nameInput.value || '').replace(/^\s+|\s+$/g, '') : '';
+    var emailVal = emailInput ? String(emailInput.value || '').replace(/^\s+|\s+$/g, '') : '';
+    var subjectVal = subjectInput ? String(subjectInput.value || '').replace(/^\s+|\s+$/g, '') : '';
+    var messageVal = messageInput ? String(messageInput.value || '').replace(/^\s+|\s+$/g, '') : '';
+
+    var emailRegex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+    if (!nameVal || !emailVal || !subjectVal || !messageVal) {
+        setContactStatusMessage(statusEl, 'error', 'Sorry, your message could not be sent. Please fill in all required fields (Name, Email, Subject, and Message).');
+        return false;
+    }
+
+    if (!emailRegex.test(emailVal)) {
+        setContactStatusMessage(statusEl, 'error', 'Sorry, your message could not be sent. Please enter a valid email address.');
+        return false;
+    }
+
+    isSubmittingContactForm = true;
+    var originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.setAttribute('aria-busy', 'true');
+        submitBtn.style.opacity = '0.7';
+        submitBtn.style.cursor = 'not-allowed';
+    }
+
+    setContactStatusMessage(statusEl, 'sending', 'Sending message...');
+
+    var endpointUrl = resolveContactEndpointUrl(form);
+    var formBody =
+        'recruiterName=' + encodeURIComponent(nameVal) +
+        '&recruiterEmail=' + encodeURIComponent(emailVal) +
+        '&roleOffered=' + encodeURIComponent(subjectVal) +
+        '&subject=' + encodeURIComponent(subjectVal) +
+        '&message=' + encodeURIComponent(messageVal);
+
+    fetch(endpointUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: formBody
+    })
+        .then(function (response) {
+            return response.json()
+                .then(function (data) {
+                    return { ok: response.ok, status: response.status, data: data };
+                })
+                .catch(function () {
+                    return { ok: false, status: response.status, data: null };
+                });
+        })
+        .then(function (result) {
+            if (result.ok && result.data && result.data.success === true) {
+                setContactStatusMessage(
+                    statusEl,
+                    'success',
+                    'Message sent successfully! Thank you for contacting me.'
+                );
+                if (form && typeof form.reset === 'function') {
+                    form.reset();
+                }
+            } else {
+                setContactStatusMessage(
+                    statusEl,
+                    'error',
+                    'Sorry, your message could not be sent. Please try again.'
+                );
+            }
+        })
+        .catch(function () {
+            setContactStatusMessage(
+                statusEl,
+                'error',
+                'Sorry, your message could not be sent. Please try again.'
+            );
+        })
+        .finally(function () {
+            isSubmittingContactForm = false;
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.removeAttribute('aria-busy');
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+                if (originalBtnHtml) {
+                    submitBtn.innerHTML = originalBtnHtml;
+                }
+            }
+        });
+
+    return false;
 }

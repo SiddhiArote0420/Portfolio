@@ -10,8 +10,12 @@ import jakarta.servlet.http.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.security.MessageDigest;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @WebServlet("/admin")
 @MultipartConfig(
@@ -20,10 +24,18 @@ import java.nio.file.StandardCopyOption;
         maxRequestSize = 1024 * 1024 * 50     // 50 MB
 )
 public class AdminServlet extends HttpServlet {
+    private static final int MAX_LOGIN_ATTEMPTS = 5;
+    private static final long LOCKOUT_DURATION_MS = 15 * 60 * 1000L; // 15 minutes
+    private static final ConcurrentHashMap<String, long[]> LOGIN_ATTEMPTS = new ConcurrentHashMap<>();
+
     private final PortfolioDAO dao = new PortfolioDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+        resp.setHeader("Pragma", "no-cache");
+        resp.setDateHeader("Expires", 0);
+
         HttpSession session = req.getSession(false);
         String action = req.getParameter("action");
 
@@ -35,9 +47,31 @@ public class AdminServlet extends HttpServlet {
             return;
         }
 
-        if (session == null || session.getAttribute("adminUser") == null) {
-            resp.sendRedirect(req.getContextPath() + "/admin-login.jsp");
+        if (!isAuthorizedAdmin(session)) {
+            if ((action != null && !action.trim().isEmpty()) || wantsJson(req)) {
+                int code = (session != null && session.getAttribute("adminUser") != null)
+                        ? HttpServletResponse.SC_FORBIDDEN
+                        : HttpServletResponse.SC_UNAUTHORIZED;
+                resp.setStatus(code);
+                resp.setContentType("application/json; charset=UTF-8");
+                resp.getWriter().print("{\"success\":false,\"error\":\"Unauthorized: Admin authentication and ROLE_ADMIN required.\"}");
+            } else {
+                resp.sendRedirect(req.getContextPath() + "/admin-login.jsp");
+            }
             return;
+        }
+
+        if (session.getAttribute("csrfToken") == null) {
+            session.setAttribute("csrfToken", UUID.randomUUID().toString());
+        }
+
+        if (action != null && !action.trim().isEmpty()) {
+            if (!isValidCsrf(req, session)) {
+                resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                resp.setContentType("application/json; charset=UTF-8");
+                resp.getWriter().print("{\"success\":false,\"error\":\"Forbidden: Invalid or missing CSRF token.\"}");
+                return;
+            }
         }
 
         if ("deleteProject".equalsIgnoreCase(action)) {
@@ -101,24 +135,76 @@ public class AdminServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
+        resp.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+        resp.setHeader("Pragma", "no-cache");
+        resp.setDateHeader("Expires", 0);
+
         String action = req.getParameter("action");
 
         if ("login".equalsIgnoreCase(action)) {
+            String clientIp = getClientIp(req);
+            if (isIpLockedOut(clientIp)) {
+                if (wantsJson(req)) {
+                    resp.setStatus(429);
+                    resp.setContentType("application/json; charset=UTF-8");
+                    resp.getWriter().print("{\"success\":false,\"error\":\"Too many failed login attempts. Please try again later.\"}");
+                } else {
+                    resp.sendRedirect(req.getContextPath() + "/admin-login.jsp?error=locked");
+                }
+                return;
+            }
+
             String username = req.getParameter("username");
             String password = req.getParameter("password");
             if (dao.validateAdmin(username, password)) {
+                clearFailedAttempts(clientIp);
+                HttpSession oldSession = req.getSession(false);
+                if (oldSession != null) {
+                    oldSession.invalidate();
+                }
                 HttpSession session = req.getSession(true);
-                session.setAttribute("adminUser", username);
-                resp.sendRedirect(req.getContextPath() + "/admin?tab=overview");
+                session.setMaxInactiveInterval(30 * 60); // 30 minutes
+                String cleanUser = username.trim();
+                String csrfToken = UUID.randomUUID().toString();
+                session.setAttribute("adminUser", cleanUser);
+                session.setAttribute("adminRole", "ROLE_ADMIN");
+                session.setAttribute("csrfToken", csrfToken);
+
+                if (wantsJson(req)) {
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                    resp.setContentType("application/json; charset=UTF-8");
+                    resp.getWriter().print("{\"success\":true,\"adminUser\":\"" + cleanUser.replace("\"", "\\\"") + "\",\"role\":\"ROLE_ADMIN\",\"csrfToken\":\"" + csrfToken + "\"}");
+                } else {
+                    resp.sendRedirect(req.getContextPath() + "/admin?tab=overview");
+                }
             } else {
-                resp.sendRedirect(req.getContextPath() + "/admin-login.jsp?error=1");
+                recordFailedAttempt(clientIp);
+                if (wantsJson(req)) {
+                    resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    resp.setContentType("application/json; charset=UTF-8");
+                    resp.getWriter().print("{\"success\":false,\"error\":\"Invalid administrator credentials.\"}");
+                } else {
+                    resp.sendRedirect(req.getContextPath() + "/admin-login.jsp?error=1");
+                }
             }
             return;
         }
 
         HttpSession session = req.getSession(false);
-        if (session == null || session.getAttribute("adminUser") == null) {
-            resp.sendRedirect(req.getContextPath() + "/admin-login.jsp");
+        if (!isAuthorizedAdmin(session)) {
+            int code = (session != null && session.getAttribute("adminUser") != null)
+                    ? HttpServletResponse.SC_FORBIDDEN
+                    : HttpServletResponse.SC_UNAUTHORIZED;
+            resp.setStatus(code);
+            resp.setContentType("application/json; charset=UTF-8");
+            resp.getWriter().print("{\"success\":false,\"error\":\"Unauthorized: Admin authentication and ROLE_ADMIN required.\"}");
+            return;
+        }
+
+        if (!isValidCsrf(req, session)) {
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            resp.setContentType("application/json; charset=UTF-8");
+            resp.getWriter().print("{\"success\":false,\"error\":\"Forbidden: Invalid or missing CSRF token.\"}");
             return;
         }
 
@@ -351,5 +437,66 @@ public class AdminServlet extends HttpServlet {
             return fallback != null ? fallback : "";
         }
         return val.trim();
+    }
+
+    private boolean isAuthorizedAdmin(HttpSession session) {
+        return session != null
+                && session.getAttribute("adminUser") != null
+                && "ROLE_ADMIN".equals(session.getAttribute("adminRole"));
+    }
+
+    private boolean isValidCsrf(HttpServletRequest req, HttpSession session) {
+        if (session == null) return false;
+        Object sessionTokenObj = session.getAttribute("csrfToken");
+        if (!(sessionTokenObj instanceof String)) return false;
+        String sessionToken = (String) sessionTokenObj;
+        String reqToken = req.getParameter("csrfToken");
+        if (reqToken == null || reqToken.trim().isEmpty()) {
+            reqToken = req.getHeader("X-CSRF-Token");
+        }
+        if (reqToken == null || reqToken.trim().isEmpty()) return false;
+        return MessageDigest.isEqual(
+                sessionToken.getBytes(StandardCharsets.UTF_8),
+                reqToken.trim().getBytes(StandardCharsets.UTF_8));
+    }
+
+    private boolean wantsJson(HttpServletRequest req) {
+        String accept = req.getHeader("Accept");
+        String xrw = req.getHeader("X-Requested-With");
+        return "XMLHttpRequest".equalsIgnoreCase(xrw)
+                || (accept != null && accept.toLowerCase().contains("application/json")
+                && !accept.toLowerCase().contains("text/html"));
+    }
+
+    private String getClientIp(HttpServletRequest req) {
+        String ip = req.getRemoteAddr();
+        return ip != null ? ip : "unknown";
+    }
+
+    private boolean isIpLockedOut(String ip) {
+        long[] record = LOGIN_ATTEMPTS.get(ip);
+        if (record == null) return false;
+        long now = System.currentTimeMillis();
+        if (now - record[1] > LOCKOUT_DURATION_MS) {
+            LOGIN_ATTEMPTS.remove(ip);
+            return false;
+        }
+        return record[0] >= MAX_LOGIN_ATTEMPTS;
+    }
+
+    private void recordFailedAttempt(String ip) {
+        long now = System.currentTimeMillis();
+        LOGIN_ATTEMPTS.compute(ip, (k, existing) -> {
+            if (existing == null || (now - existing[1] > LOCKOUT_DURATION_MS)) {
+                return new long[]{1L, now};
+            }
+            existing[0] = existing[0] + 1L;
+            existing[1] = now;
+            return existing;
+        });
+    }
+
+    private void clearFailedAttempts(String ip) {
+        LOGIN_ATTEMPTS.remove(ip);
     }
 }

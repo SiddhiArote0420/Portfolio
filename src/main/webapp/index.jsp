@@ -67,9 +67,6 @@
             <a href="#resume-section" class="btn-resume-nav">
                 <i class="fa-regular fa-file-lines"></i> Resume
             </a>
-            <a href="<%= request.getContextPath() %>/admin" class="btn-admin-nav" title="Admin Dashboard to Add/Update Your Portfolio Data">
-                <i class="fa-solid fa-sliders"></i> Admin
-            </a>
         </div>
     </div>
 </header>
@@ -223,9 +220,8 @@
             <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="card project-card text-center p-5 border-secondary">
                     <div class="mb-3" style="font-size:2.2rem;color:#00e5ff;"><i class="fa-solid fa-folder-plus"></i></div>
-                    <h4 class="text-white fw-bold mb-2">Add Your Projects</h4>
-                    <p class="text-secondary mb-3">Open the Admin CMS Portal to add your own flagship projects, tech stacks, GitHub links, and architecture details.</p>
-                    <div><a href="<%= request.getContextPath() %>/admin?tab=projects" class="btn-explore">+ Add Projects in Admin Panel</a></div>
+                    <h4 class="text-white fw-bold mb-2">Projects Coming Soon</h4>
+                    <p class="text-secondary mb-0">Flagship engineering projects and architecture deep-dives will be listed here.</p>
                 </div>
             </div>
             <% } else {
@@ -314,9 +310,8 @@
             <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="card edu-card text-center p-5 border-secondary">
                     <div class="mb-3" style="font-size:2.2rem;color:#10b981;"><i class="fa-solid fa-graduation-cap"></i></div>
-                    <h4 class="text-white fw-bold mb-2">Add Your Academic Background &amp; Marksheet Proofs</h4>
-                    <p class="text-secondary mb-3">Open the Admin CMS Portal to add your degrees, college, CGPA/percentage, and upload marksheet/certificate PDFs.</p>
-                    <div><a href="<%= request.getContextPath() %>/admin?tab=education" class="btn-explore">+ Add Education in Admin Panel</a></div>
+                    <h4 class="text-white fw-bold mb-2">Academic Credentials</h4>
+                    <p class="text-secondary mb-0">Academic background and verified marksheet proofs will appear here.</p>
                 </div>
             </div>
             <% } else {
@@ -412,9 +407,8 @@
             <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="card cert-card text-center p-5 border-secondary">
                     <div class="mb-3" style="font-size:2.2rem;color:#fbbf24;"><i class="fa-solid fa-award"></i></div>
-                    <h4 class="text-white fw-bold mb-2">Add Your Certifications &amp; Honors</h4>
-                    <p class="text-secondary mb-3">Open the Admin CMS Portal to add your certificates, scores, credential IDs, and upload certificate proof files.</p>
-                    <div><a href="<%= request.getContextPath() %>/admin?tab=certificates" class="btn-explore">+ Add Certificates in Admin Panel</a></div>
+                    <h4 class="text-white fw-bold mb-2">Certifications &amp; Honors</h4>
+                    <p class="text-secondary mb-0">Professional certifications and honors will appear here.</p>
                 </div>
             </div>
             <% } else {
@@ -487,9 +481,8 @@
             <% if (experiences.isEmpty()) { %>
             <div class="card exp-card text-center p-5 border-secondary">
                 <div class="mb-3" style="font-size:2.2rem;color:#38bdf8;"><i class="fa-solid fa-briefcase"></i></div>
-                <h4 class="text-white fw-bold mb-2">Add Your Work Experience &amp; Internships</h4>
-                <p class="text-secondary mb-3">Open the Admin CMS Portal to add your internships/jobs, tech stacks, and upload completion certificates or offer letters.</p>
-                <div><a href="<%= request.getContextPath() %>/admin?tab=experience" class="btn-explore">+ Add Experience in Admin Panel</a></div>
+                <h4 class="text-white fw-bold mb-2">Work Experience &amp; Internships</h4>
+                <p class="text-secondary mb-0">Professional software development roles and internships will appear here.</p>
             </div>
             <% } else {
                 for (Experience ex : experiences) {
@@ -608,9 +601,8 @@
             <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="card skill-cat-card text-center p-5 border-secondary">
                     <div class="mb-3" style="font-size:2.2rem;color:#f59e0b;"><i class="fa-solid fa-microchip"></i></div>
-                    <h4 class="text-white fw-bold mb-2">Add Your Technical Skills</h4>
-                    <p class="text-secondary mb-3">Open the Admin CMS Portal to add your technical skills, badges (Language, Framework, ORM, Database), and proficiency levels.</p>
-                    <div><a href="<%= request.getContextPath() %>/admin?tab=skills" class="btn-explore">+ Add Skills in Admin Panel</a></div>
+                    <h4 class="text-white fw-bold mb-2">Technical Skills</h4>
+                    <p class="text-secondary mb-0">Categorized technical competencies and proficiency levels will appear here.</p>
                 </div>
             </div>
             <% } else {
@@ -673,10 +665,6 @@
                     <a href="<%= resFullUrl %>?download=true" class="btn-explore" style="padding:0.55rem 1.15rem;font-size:0.82rem;background:linear-gradient(90deg,#0284c7,#2563eb);">
                         <i class="fa-solid fa-download"></i> Download PDF
                     </a>
-                    <% } else { %>
-                    <a href="<%= request.getContextPath() %>/admin?tab=profile" class="btn-explore" style="padding:0.55rem 1.15rem;font-size:0.82rem;">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> Upload Resume PDF in Admin
-                    </a>
                     <% } %>
                 </div>
             </div>
@@ -688,13 +676,10 @@
             <% } else { %>
             <div class="text-center p-5" style="background:#070b14;border:1px dashed #334155;border-radius:12px;">
                 <i class="fa-regular fa-file-pdf mb-3" style="font-size:2.6rem;color:#38bdf8;"></i>
-                <h4 class="text-white fw-bold mb-2">No Resume PDF Uploaded Yet</h4>
-                <p class="text-secondary mb-3" style="max-width:480px;margin:0 auto;">
-                    Go to <strong>Admin CMS → Profile, Pic &amp; Resume</strong> and upload your Resume PDF. It will immediately appear here with live preview and one-click download!
+                <h4 class="text-white fw-bold mb-2">Resume Preview</h4>
+                <p class="text-secondary mb-0" style="max-width:480px;margin:0 auto;">
+                    Official Resume PDF will be available for preview and download here.
                 </p>
-                <a href="<%= request.getContextPath() %>/admin?tab=profile" class="btn-dark-cta">
-                    <i class="fa-solid fa-upload" style="color:#00e5ff;"></i> Upload Resume Now
-                </a>
             </div>
             <% } %>
         </div>
@@ -793,30 +778,31 @@
                         <i class="fa-regular fa-comment-dots" style="color:#00e5ff;"></i> Send Direct Message
                     </h3>
 
-                    <form action="<%= request.getContextPath() %>/contact" method="post">
+                    <form id="contactForm" action="<%= request.getContextPath() %>/contact" method="post" onsubmit="return submitPortfolioContactForm(event)">
                         <input type="hidden" name="companyName" value="Direct Portfolio Inquiry">
                         <input type="hidden" name="recruiterPhone" value="">
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
-                                <label class="form-label">Your Name *</label>
-                                <input type="text" name="recruiterName" class="form-control" placeholder="e.g. John Doe" required>
+                                <label class="form-label" for="contactName">Your Name *</label>
+                                <input type="text" id="contactName" name="recruiterName" class="form-control" placeholder="e.g. John Doe" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Your Email *</label>
-                                <input type="email" name="recruiterEmail" class="form-control" placeholder="e.g. recruiter@company.com" required>
+                                <label class="form-label" for="contactEmail">Your Email *</label>
+                                <input type="email" id="contactEmail" name="recruiterEmail" class="form-control" placeholder="e.g. recruiter@company.com" required>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Subject</label>
-                            <input type="text" name="roleOffered" class="form-control" placeholder="e.g. Interview Invitation / Job Opportunity" required>
+                            <label class="form-label" for="contactSubject">Subject</label>
+                            <input type="text" id="contactSubject" name="roleOffered" class="form-control" placeholder="e.g. Interview Invitation / Job Opportunity" required>
                         </div>
                         <div class="mb-4">
-                            <label class="form-label">Your Message *</label>
-                            <textarea name="message" rows="4" class="form-control" placeholder="Tell me about the role, team, or opportunity..." required></textarea>
+                            <label class="form-label" for="contactMessage">Your Message *</label>
+                            <textarea id="contactMessage" name="message" rows="4" class="form-control" placeholder="Tell me about the role, team, or opportunity..." required></textarea>
                         </div>
-                        <button type="submit" class="btn-explore w-100 justify-content-center py-3" style="background:linear-gradient(90deg, #2563eb 0%, #00d2b8 100%);">
+                        <button type="submit" id="contactSubmitBtn" class="btn-explore w-100 justify-content-center py-3" style="background:linear-gradient(90deg, #2563eb 0%, #00d2b8 100%);">
                             <i class="fa-regular fa-paper-plane"></i> Send Email to <%= profile.getShortName() %>
                         </button>
+                        <div id="contactFormStatus" role="status" aria-live="polite" style="display:none;margin-top:0.85rem;padding:0.75rem 1rem;border-radius:10px;font-size:0.86rem;font-weight:600;text-align:center;"></div>
                     </form>
                 </div>
             </div>
@@ -847,8 +833,6 @@
             <a href="<%= profile.getLeetcodeUrl() %>" target="_blank">LeetCode</a>
             <span>•</span>
             <a href="mailto:<%= profile.getEmail() %>">Email</a>
-            <span>•</span>
-            <a href="<%= request.getContextPath() %>/admin" style="color:#38bdf8;">Admin Login</a>
         </div>
 
         <a href="#top" class="btn-resume-nav" style="border-radius:999px;padding:0.5rem 1.1rem;">
@@ -910,9 +894,6 @@
             <div class="mt-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <a id="prfDownloadBtn" href="#" target="_blank" class="btn-explore" style="padding:0.6rem 1.15rem;font-size:0.82rem;display:none;">
                     <i class="fa-solid fa-download"></i> Open / Download Original File
-                </a>
-                <a href="<%= request.getContextPath() %>/admin" style="font-size:0.78rem;color:#38bdf8;">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> Update / Upload Document in Admin CMS
                 </a>
             </div>
         </div>
@@ -1154,8 +1135,7 @@
             box.innerHTML = '<div style="padding:1.5rem;">' +
                 '<div style="width:64px;height:64px;border-radius:50%;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#10b981;display:inline-flex;align-items:center;justify-content:center;font-size:1.6rem;margin-bottom:1rem;"><i class="fa-solid fa-shield-halved"></i></div>' +
                 '<h4 style="font-size:1.05rem;font-weight:800;color:#fff;margin-bottom:0.4rem;">' + title + '</h4>' +
-                '<p style="font-size:0.84rem;color:#94a3b8;max-width:460px;margin:0 auto 1rem;">Upload the scanned PDF/Image file for this credential anytime from your <strong style="color:#00e5ff;">Admin CMS Dashboard</strong>.</p>' +
-                '<a href="' + ctxPath + '/admin" class="edu-duration-pill"><i class="fa-solid fa-upload"></i> Upload Document in Admin</a>' +
+                '<p style="font-size:0.84rem;color:#94a3b8;max-width:460px;margin:0 auto;">Verified credential record on file.</p>' +
                 '</div>';
         }
         document.getElementById('proofModal').classList.add('open');

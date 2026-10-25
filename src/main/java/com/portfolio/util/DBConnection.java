@@ -1,17 +1,90 @@
 package com.portfolio.util;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Properties;
 
 public class DBConnection {
-    private static final String BASE_URL = "jdbc:mysql://localhost:3306/?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/portfolio_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8";
-    private static final String USER = "root";
-    private static final String PASS = "MySql_Sid@20";
+    private static final String DEFAULT_BASE_URL = "jdbc:mysql://localhost:3306/?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+    private static final String DEFAULT_DB_URL = "jdbc:mysql://localhost:3306/portfolio_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8";
+    private static final String DEFAULT_USER = "root";
     private static volatile boolean initialized = false;
+    private static volatile Properties cachedLocalSecrets = null;
+
+    public static String getSecret(String envKey, String propKey, String defaultValue) {
+        if (propKey != null) {
+            String sysVal = System.getProperty(propKey);
+            if (sysVal != null && !sysVal.trim().isEmpty()) {
+                return sysVal.trim();
+            }
+        }
+        if (envKey != null) {
+            String sysEnvVal = System.getProperty(envKey);
+            if (sysEnvVal != null && !sysEnvVal.trim().isEmpty()) {
+                return sysEnvVal.trim();
+            }
+            String envVal = System.getenv(envKey);
+            if (envVal != null && !envVal.trim().isEmpty()) {
+                return envVal.trim();
+            }
+        }
+        Properties localProps = loadLocalSecrets();
+        if (propKey != null && localProps.getProperty(propKey) != null && !localProps.getProperty(propKey).trim().isEmpty()) {
+            return localProps.getProperty(propKey).trim();
+        }
+        if (envKey != null && localProps.getProperty(envKey) != null && !localProps.getProperty(envKey).trim().isEmpty()) {
+            return localProps.getProperty(envKey).trim();
+        }
+        return defaultValue;
+    }
+
+    private static Properties loadLocalSecrets() {
+        if (cachedLocalSecrets != null) {
+            return cachedLocalSecrets;
+        }
+        Properties props = new Properties();
+        String customPath = System.getenv("PORTFOLIO_SECRETS_FILE");
+        String userHome = System.getProperty("user.home", "");
+        File[] candidates = new File[]{
+                customPath != null ? new File(customPath) : null,
+                new File("config/local-secrets.properties"),
+                new File("local-secrets.properties"),
+                userHome.isEmpty() ? null : new File(userHome, ".portfolio-secrets.properties"),
+                new File("D:/PROJECTdATA/PROJECTdATA/SmartCareerRecommendationSystem/Portfolio/config/local-secrets.properties")
+        };
+        for (File f : candidates) {
+            if (f != null && f.isFile() && f.canRead()) {
+                try (FileInputStream fis = new FileInputStream(f)) {
+                    props.load(fis);
+                    break;
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        cachedLocalSecrets = props;
+        return props;
+    }
+
+    private static String getBaseUrl() {
+        return getSecret("DB_BASE_URL", "db.base.url", DEFAULT_BASE_URL);
+    }
+
+    private static String getDbUrl() {
+        return getSecret("DB_URL", "db.url", DEFAULT_DB_URL);
+    }
+
+    private static String getDbUser() {
+        return getSecret("DB_USER", "db.user", DEFAULT_USER);
+    }
+
+    private static String getDbPassword() {
+        return getSecret("DB_PASSWORD", "db.password", "");
+    }
 
     public static Connection getConnection() throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -23,18 +96,23 @@ public class DBConnection {
                 }
             }
         }
-        return DriverManager.getConnection(DB_URL, USER, PASS);
+        return DriverManager.getConnection(getDbUrl(), getDbUser(), getDbPassword());
     }
 
     private static void initializeDatabase() {
-        try (Connection rootConn = DriverManager.getConnection(BASE_URL, USER, PASS);
+        String baseUrl = getBaseUrl();
+        String dbUrl = getDbUrl();
+        String user = getDbUser();
+        String pass = getDbPassword();
+
+        try (Connection rootConn = DriverManager.getConnection(baseUrl, user, pass);
              Statement rootStmt = rootConn.createStatement()) {
             rootStmt.executeUpdate("CREATE DATABASE IF NOT EXISTS portfolio_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
         } catch (Exception e) {
-            e.printStackTrace();
+            // Ignore if connecting to a managed cloud database where root CREATE DATABASE is not needed
         }
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection conn = DriverManager.getConnection(dbUrl, user, pass);
              Statement stmt = conn.createStatement()) {
 
             // 1. Admin Users Table
@@ -173,11 +251,20 @@ public class DBConnection {
     }
 
     private static void seedDefaultAdminAndSiddhiProfile(Connection conn) throws Exception {
-        // Default Admin Login: admin / admin123
+        // Seed initial admin only if table is empty AND environment credentials are configured
         try (Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM admin_users")) {
             if (rs.next() && rs.getInt(1) == 0) {
-                st.executeUpdate("INSERT INTO admin_users (username, password) VALUES ('admin', 'admin123')");
+                String initUser = getSecret("ADMIN_USERNAME", "admin.username", "");
+                String initPass = getSecret("ADMIN_PASSWORD", "admin.password", "");
+                if (!initUser.isEmpty() && !initPass.isEmpty()) {
+                    try (PreparedStatement ps = conn.prepareStatement(
+                            "INSERT INTO admin_users (id, username, password) VALUES (1, ?, ?)")) {
+                        ps.setString(1, initUser);
+                        ps.setString(2, initPass);
+                        ps.executeUpdate();
+                    }
+                }
             }
         }
 
@@ -209,45 +296,22 @@ public class DBConnection {
                     ps.setString(16, "");
                     ps.setString(17, "");
                     ps.setString(18, "");
-                    ps.setString(19, "https://github.com/");
-                    ps.setString(20, "https://linkedin.com/");
-                    ps.setString(21, "https://leetcode.com/");
-                    ps.setString(22, "siddhiarote@gmail.com");
-                    ps.setString(23, "+91 ");
+                    ps.setString(19, "https://github.com/SiddhiArote0420");
+                    ps.setString(20, "https://linkedin.com/in/siddhi-arote-3b6bb731a");
+                    ps.setString(21, "https://leetcode.com/u/Arote_Siddhi");
+                    ps.setString(22, "siddhiarote5@gmail.com");
+                    ps.setString(23, "+91 9822076804");
                     ps.executeUpdate();
                 }
             }
         }
     }
 
-    /**
-     * Resets the database to clean Siddhi Arote profile with empty tables ready for Admin entry
-     */
-    public static void resetToCleanSiddhiProfile() {
-        try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement()) {
-            stmt.executeUpdate("DELETE FROM projects");
-            stmt.executeUpdate("DELETE FROM education");
-            stmt.executeUpdate("DELETE FROM certificates");
-            stmt.executeUpdate("DELETE FROM experience");
-            stmt.executeUpdate("DELETE FROM skills");
-            stmt.executeUpdate("DELETE FROM profile");
-            seedDefaultAdminAndSiddhiProfile(conn);
-            System.out.println("Reset portfolio_db to clean Siddhi Arote profile (0 dummy items)!");
+    public static void main(String[] args) {
+        try (Connection c = getConnection()) {
+            System.out.println("Database portfolio_db connected successfully!");
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    public static void main(String[] args) {
-        if (args.length > 0 && "reset".equalsIgnoreCase(args[0])) {
-            resetToCleanSiddhiProfile();
-        } else {
-            try (Connection c = getConnection()) {
-                System.out.println("Database portfolio_db connected successfully!");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 }

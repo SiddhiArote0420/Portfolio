@@ -22,7 +22,11 @@
 
     <% if ("1".equals(request.getParameter("error"))) { %>
     <div style="background:rgba(244,63,94,0.15);border:1px solid #f43f5e;color:#fda4af;padding:0.7rem 1rem;border-radius:10px;font-size:0.8rem;margin-bottom:1.1rem;text-align:center;">
-        <i class="fa-solid fa-triangle-exclamation"></i> Invalid username or password. Default: <strong>admin / admin123</strong>
+        <i class="fa-solid fa-triangle-exclamation"></i> Invalid administrator username or password.
+    </div>
+    <% } else if ("locked".equals(request.getParameter("error"))) { %>
+    <div style="background:rgba(244,63,94,0.15);border:1px solid #f43f5e;color:#fda4af;padding:0.7rem 1rem;border-radius:10px;font-size:0.8rem;margin-bottom:1.1rem;text-align:center;">
+        <i class="fa-solid fa-shield-halved"></i> Too many failed login attempts. Access temporarily locked for 15 minutes.
     </div>
     <% } %>
 
@@ -32,15 +36,15 @@
     </div>
     <% } %>
 
-    <form action="<%= request.getContextPath() %>/admin" method="post">
+    <form action="<%= request.getContextPath() %>/admin" method="post" autocomplete="off">
         <input type="hidden" name="action" value="login">
         <div class="form-group">
             <label class="form-label">Admin Username</label>
-            <input type="text" name="username" class="form-control" value="admin" required>
+            <input type="text" name="username" class="form-control" placeholder="Enter administrator username" autocomplete="username" required>
         </div>
         <div class="form-group" style="margin-bottom:1.4rem;">
             <label class="form-label">Admin Password</label>
-            <input type="password" name="password" class="form-control" value="admin123" required>
+            <input type="password" name="password" class="form-control" placeholder="Enter administrator password" autocomplete="current-password" required>
         </div>
         <button type="submit" class="btn-explore" style="width:100%;justify-content:center;">
             <i class="fa-solid fa-lock-open"></i> Sign In to Portfolio Admin
@@ -48,7 +52,7 @@
     </form>
 
     <div style="margin-top:1.4rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;font-size:0.78rem;color:#64748b;">
-        <span>Default: <strong style="color:#cbd5e1;">admin / admin123</strong></span>
+        <span><i class="fa-solid fa-shield-halved"></i> Authorized Administrator Only</span>
         <a href="<%= request.getContextPath() %>/index.jsp" style="color:#00e5ff;font-weight:600;">← Back to Portfolio</a>
     </div>
 </div>

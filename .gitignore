@@ -3,6 +3,13 @@ build/
 target/
 *.war
 
+# Secrets & local environment configuration (NEVER commit credentials)
+.env
+*.env
+.env.*
+config/local-secrets.properties
+local-secrets.properties
+
 # OS & temporary files
 .DS_Store
 Thumbs.db
